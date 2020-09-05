@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar style="position: relative">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{title}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+  <app-carrito style="width: 100%; height: 100%;" *ngIf="isCarrito">
+  </app-carrito>
+  <div class="destinationBox" *ngIf="isCarrito">
+    <div class="buttonBox">
+      <button class="actionButton" (click)="selectLocation()">Seleccionar destino</button>
+    </div>
+    <div class="briefBox" *ngIf="destino">
+      <p>
+        Lugar donde se envía: {{destino.vicinity}}
+      </p>
+    </div>
+  </div>
+  <div class="actionBox" *ngIf="destino && isCarrito">
+    <div class="buttonBox">
+      <button class="actionButton" (click)="completarPedido()">Completar pedido</button>
+    </div>
+
+  </div>
+  <app-eats-destination [restLocation]="restLocation" style="width: 100%; height: 100%;" *ngIf="isPlaceSelection"
+    (placeSelected)="setLocation($event)">
+  </app-eats-destination>
+</ion-content>

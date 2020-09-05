@@ -1,0 +1,13 @@
+<div class="bigCardBox">
+  <p class="closeButton" (click)="cerrar()">X</p>
+  <div class="headingBox">
+    <div class="imgBox">
+      <img class="imgResultados" [src]="restaurant.image" alt="" />
+    </div>
+    <p class="titleText">{{restaurant.name}}<br>{{restaurant.phoneNumber}}</p>
+  </div>
+  <div class="vehicleInfo">
+    <p class="insideTitle">INFORMACIÓN DEL RESTAURANTE</p>
+    <p class="insideContent">{{'DESCRIPTION' | translate}}: {{restaurant.description}}</p>
+  </div>
+</div>

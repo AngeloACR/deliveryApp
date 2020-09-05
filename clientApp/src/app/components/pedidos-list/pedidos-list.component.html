@@ -1,0 +1,20 @@
+<div id="pedidoCards" class="bigBox" *ngIf="pedidosLength">
+  <div class="cardBox" *ngFor="let pedido of pedidos">
+    <div class="infoBox">
+      <p>Origen: <br>{{pedido.origin.vicinity}}</p><br>
+      <p>Destino: <br>{{pedido.destination.vicinity}}</p><br>
+      <p>Monto Total: {{pedido.carrito.montoTotal}}</p><br>
+      <p>Costo de envío: {{pedido.fee}}</p><br>
+    </div>
+    <div class="moreBox" *ngIf="isPago">
+      <button type="button" (click)="pagar($event, pedido)">
+        <p>Pagar</p>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="noFound" class="bigBox" *ngIf="!pedidosLength">
+  <div class="cardBox">
+    <p class="noFoundText">No hay pedidos para mostrar</p>
+  </div>
+</div>

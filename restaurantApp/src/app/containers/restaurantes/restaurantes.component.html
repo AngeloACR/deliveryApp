@@ -1,0 +1,23 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-buttons slot="start">
+			<ion-menu-button></ion-menu-button>
+		</ion-buttons>
+		<ion-title>{{title}}</ion-title>
+	</ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+	<app-lista-restaurant #lista *ngIf="restaurantesReady && isRestaurant" [restaurantes]="restaurantes"
+		(borrar)="deleteRestaurant($event)" (verCategorias)="verCategorias($event)" (editar)="editRestaurant($event)">
+	</app-lista-restaurant>
+
+	<app-lista-categorias *ngIf="categoriasReady && isCategorias" [categorias]="categorias"
+		(borrar)="deleteCategoria($event)" (volver)="volverRestaurantes()" (verProductos)="verProductos($event)"
+		(editar)="editCategoria($event)"></app-lista-categorias>
+
+	<app-lista-productos *ngIf="productosReady && isProductos" [productos]="productos" (borrar)="deleteProducto($event)"
+		(volver)="volverCategorias()" (editar)="editProducto($event)">
+	</app-lista-productos>
+
+
+</ion-content>

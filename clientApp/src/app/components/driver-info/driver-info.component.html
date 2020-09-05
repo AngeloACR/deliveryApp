@@ -1,0 +1,20 @@
+<div class="bigCardBox">
+  <p class="closeButton" (click)="cerrar()">X</p>
+  <div class="headingBox">
+    <div class="imgBox">
+      <img class="imgResultados" [src]="driver.imagenPerfil" alt="" />
+    </div>
+    <p class="titleText">{{driver.name}}<br>{{driver.phoneNumber}}</p>
+  </div>
+  <div class="vehicleInfo">
+    <p class="insideTitle">{{'VEHICLE_DATA' | translate}}</p>
+    <p class="insideContent">{{'BRAND' | translate}}: {{driver.brand}}</p>
+    <p class="insideContent">{{'MODEL' | translate}}: {{driver.model}}</p>
+    <p class="insideContent">{{'PLATE' | translate}}: {{driver.plate}}</p>
+    <p class="insideTitle">{{'RATING' | translate}}: {{driver.rating}}</p>
+  </div>
+  <div class="buttonBox">
+    <button class="dealButton" (click)="pedirCarrera()">
+      {{'RIDE_NOW' | translate}}</button>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<ion-content class="loginPage">
+  <div class="login-header">
+    <img src="./assets/img/Logotipo.png" />
+    <h2 ion-text color="light">{{'LOGIN' | translate}}</h2>
+  </div>
+  <div class="loginContent" padding>
+    <form [formGroup]="login" style="margin: 0; padding: 0; width: 100%; height: 100%;">
+
+      <ion-list class="loginForm" lines="none">
+        <ion-item class="loginItem">
+          <input class="lInput" placeholder="{{'EMAIL_ADDRESS' | translate }}" type="text" formControlName="email" name="email">
+        </ion-item>
+        <ion-item class="loginItem">
+          <input class="lInput" placeholder="{{'PASSWORD' | translate }}" type="password" formControlName="password" name="password">
+        </ion-item>
+      </ion-list>
+      <div class="buttonBox">
+        <button type="button" class="formButton" (click)="loginUser()">{{'LOGIN' | translate }}</button>
+        <p class="tagLine" (click)="reset()">
+          {{'FORGOT' | translate }}
+        </p>
+        <button type="button" class="formButton" routerLink="/register">{{'REGISTER' | translate }}</button>
+      </div>
+    </form>
+
+
+  </div>
+
+</ion-content>

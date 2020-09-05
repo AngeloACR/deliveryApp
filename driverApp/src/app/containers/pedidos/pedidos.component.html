@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="typesBox">
+    <button class="typeButton" [ngClass]="pendingButton" (click)="togglePedidos($event, 'pending')">Pedidos
+      pendientes</button>
+    <button class="typeButton" [ngClass]="acceptedButton" (click)="togglePedidos($event, 'accepted')">Pedidos
+      aceptados</button>
+    <button class="typeButton" [ngClass]="rejectedButton" (click)="togglePedidos($event, 'rejected')">Pedidos
+      rechazados</button>
+
+  </div>
+  <app-pedidos-list (actualizar)="actualizarPedidos()" *ngIf="showPedidos" [isAceptar]="isAceptar" [pedidos]="pedidos">
+  </app-pedidos-list>
+</ion-content>

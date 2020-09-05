@@ -1,0 +1,37 @@
+<div class="mapBoxInner">
+
+  <div class="inputsBox" *ngIf="!routeSelected">
+    <div class="mapItem" *ngIf="isOrigin">
+      <button *ngIf="originInput && !originSelected" (click)="chooseOrigin()">Escoger origen</button>
+      <button *ngIf="originSelection && !originSelected" (click)="selectOriginPoint()">Seleccionar esta ubicación como
+        origen</button>
+      <div class="briefBox" *ngIf="originSelected">
+        <p>Ubicacion seleccionada: <br>{{originAddress}}</p>
+        <button (click)="chooseOrigin()">Escoger otro origen</button>
+      </div>
+    </div>
+    <div class="mapItem" *ngIf="isDestination">
+      <button *ngIf="destinationInput && !destinationSelected" (click)="chooseDestination()">Escoger
+        destino</button>
+      <button *ngIf="destinationSelection && !destinationSelected" (click)="selectDestinationPoint()">Seleccionar esta
+        ubicación como
+        destino</button>
+      <div class="briefBox" *ngIf="destinationSelected">
+        <p>Ubicacion seleccionada: <br>{{destinationAddress}}</p>
+        <button (click)="chooseDestination()">Escoger otro destino</button>
+      </div>
+    </div>
+    <input #locationInput id="locationInput" class="locationInput"
+      *ngIf="(isOrigin || isDestination) && !(originSelected && destinationSelected) " (click)="chooseLocation()"
+      [placeholder]="locationText" type="text">
+    <div class="routeButton" *ngIf="originSelected && destinationSelected">
+      <button (click)="traceRoute()">Trazar ruta</button>
+    </div>
+  </div>
+  <div class="inputsBox" *ngIf="routeSelected">
+    <div class="routeButton">
+      <button (click)="selectPoints()">Trazar otra ruta</button>
+    </div>
+  </div>
+  <div [id]="mapId" style="height: 100%;width:100%;"></div>
+</div>

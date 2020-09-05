@@ -1,0 +1,69 @@
+<form [formGroup]="productForm" (submit)="submitProduct()" novalidate>
+  <ion-list class="loginForm">
+
+    <ion-item class="loginItem">
+
+      <ion-label stacked class="">Nombre de la Categoría</ion-label>
+      <input class="lInput" placeholder="{{'NAME' | translate }}" type="text" formControlName="name" name="name">
+    </ion-item>
+
+    <ion-item class="loginItem">
+      <ion-label stacked class="">Descripción</ion-label>
+      <input class="lInput" placeholder="{{'DESCRIPTION' | translate }}" type="text" formControlName="description"
+        name="description">
+    </ion-item>
+
+    <ion-item class="loginItem">
+      <ion-label stacked class="">Precio</ion-label>
+      <input class="lInput" placeholder="{{'PRICE' | translate }}" type="number" formControlName="price"
+        name="description">
+    </ion-item>
+
+    <ion-item class="selectItem">
+      <ion-label style="max-width: 60%; white-space: normal;">¿El producto está disponible para la venta?</ion-label>
+      <ion-select formControlName="available" okText="Okay" cancelText="Dismiss">
+        <ion-select-option value="Si">Sí</ion-select-option>
+        <ion-select-option value="No">No</ion-select-option>
+
+      </ion-select>
+    </ion-item>
+
+
+    <ion-item class="selectItem">
+      <ion-label>Asociar restaurante</ion-label>
+      <ion-select (ionChange)="toggleCat()" formControlName="restaurant" okText="Ok" cancelText="Cerrar">
+        <ion-select-option *ngFor="let restaurant of restaurantes" value="{{restaurant.key}}">
+          {{restaurant.name}}
+        </ion-select-option>
+
+      </ion-select>
+    </ion-item>
+
+    <ion-item class="selectItem">
+      <ion-label>Asociar categoría</ion-label>
+      <ion-select formControlName="category" okText="Ok" cancelText="Cerrar">
+        <ion-select-option *ngFor="let categoria of categorias" value="{{categoria.key}}">{{categoria.name}}
+        </ion-select-option>
+
+      </ion-select>
+    </ion-item>
+
+
+    <div *ngIf="downloadURL != null">
+      <img src="{{downloadURL}}">
+
+    </div>
+    <ion-item class="fileItem">
+      <input type="file" name="restImg" (change)="onChange($event)">
+
+    </ion-item>
+
+
+
+  </ion-list>
+
+
+  <ion-button expand="full" color="primary" type="submit">Crear Producto</ion-button>
+
+
+</form>

@@ -1,0 +1,33 @@
+<div id="restaurantCards" class="bigBox" *ngIf="restaurantesLength">
+  <div class="cardBox" *ngFor="let restaurant of restaurantes">
+    <div class="imgBox">
+      <img class="imgResultados" [src]="restaurant.image" alt="" />
+    </div>
+    <div class="infoBox">
+      <p>{{'NAME' | translate}}: <br>{{restaurant.name}}</p><br><br>
+      <p>{{'DESCRIPTION' | translate}}: <br>{{restaurant.description}}</p><br><br>
+      <p>{{'TLF' | translate}}: <br>{{restaurant.tlf}}</p>
+    </div>
+    <div class="moreBox" *ngIf="!isPedidos">
+      <button type="button" style="margin-bottom: 10px;" (click)="borrar($event, restaurant)">
+        <p>{{'DELETE' | translate}}</p>
+      </button>
+      <button type="button" style="margin-bottom: 10px;" (click)="editar($event, restaurant)">
+        <p>{{'EDIT' | translate}}</p>
+      </button>
+      <button type="button" (click)="categorias($event, restaurant)">
+        <p>Ver categorías</p>
+      </button>
+    </div>
+    <div class="moreBox" *ngIf="isPedidos">
+      <button type="button" (click)="pedidos($event, restaurant)">
+        <p>Ver pedidos</p>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="noFound" class="bigBox" *ngIf="!restaurantesLength">
+  <div class="cardBox">
+    <p class="noFoundText">{{'NO_RESTAURANTS' | translate}}</p>
+  </div>
+</div>

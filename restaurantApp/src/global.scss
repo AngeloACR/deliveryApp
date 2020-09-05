@@ -1,0 +1,220 @@
+// http://ionicframework.com/docs/theming/
+@import "~@ionic/angular/css/core.css";
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+/********************Extraido de rider app *******************/
+
+.login-header {
+  text-align: center;
+  padding-top: 60px;
+  padding-bottom: 23px;
+  background-color: transparent;
+}
+.login-header h2 {
+  color: #fff;
+}
+.login-header img {
+  height: 80px;
+  width: 80px;
+}
+ion-button {
+  --box-shadow: none;
+}
+
+ion-input,
+ion-textarea,
+ion-select {
+  background: #eee !important;
+  margin-top: 1rem !important;
+  border: 1px solid #ddd !important;
+}
+
+ion-item {
+  --highlight-color-valid: transparent;
+  --highlight-color-invalid: transparent;
+  --highlight-color-focused: transparent;
+}
+
+ion-header {
+  color: white;
+}
+
+ion-toolbar {
+  color: white;
+  --background: black !important;
+}
+
+.menuToolbar {
+  --background: #cccc33 !important;
+  display: flex;
+  justify-content: center;
+}
+
+.menuContent {
+  --background: black !important;
+  overflow: scroll;
+}
+.menuList {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: black !important;
+}
+
+.menuItem {
+  color: white;
+  --background: black !important;
+}
+
+.logoutItem {
+  margin-top: auto;
+}
+
+.native-input.sc-ion-input-md {
+  padding: 0.5rem !important;
+  color: #555;
+}
+
+.sidebar-header {
+  background: #222;
+  height: 150px;
+  padding: 2rem;
+  color: #fff;
+}
+
+.login-content ion-list {
+  background-color: transparent;
+  margin-bottom: 23px;
+}
+
+.loginItem {
+  --background: var(--ion-item-background, var(--ion-background-color, #000));
+}
+.loginForm {
+  background-color: black;
+}
+.lInput {
+  flex-basis: 100%;
+  font-size: 16px;
+  padding-left: 23px;
+  border-radius: 0 !important;
+  height: 36px;
+  border: none;
+  background-image: none;
+  background-color: white;
+  /*     backdrop-filter: grayscale(0.5) opacity(0.8);
+ */
+  opacity: 0.8;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+.lInput::placeholder {
+  color: black;
+  font-weight: bolder;
+}
+
+.buttonBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.tagLine {
+  font-size: 12px;
+  color: white;
+  /*     border-style: solid;
+    border-bottom-width:1px;
+    border-top-width:0;
+    border-left-width:0;
+    border-right-width: 0; */
+  text-decoration: underline;
+  border-color: white;
+  margin: 0;
+  margin-bottom: 15px;
+}
+
+.tagLine:active {
+  font-weight: bold;
+}
+
+.formButton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  width: 60%;
+  color: black;
+  background-color: #cccc33;
+  font-weight: bold;
+  margin: auto;
+  margin-top: 3vh;
+  margin-bottom: 2vh;
+  border-radius: 42px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #cccc33;
+  cursor: pointer;
+}
+
+.formButton:active {
+  background-color: black;
+  color: white;
+}
+
+.formButton p {
+  color: white;
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  width: 100%;
+  text-decoration: none !important;
+}
+
+.formButton:active p {
+  color: white;
+}
+
+.loginPage {
+  --background: var(--ion-item-background, var(--ion-background-color, #000));
+  height: 100%;
+}
+
+.loginContent {
+  background-color: black;
+}
+
+.modBox {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+}
+
+ion-item.fileItem {
+  --ion-background-color: black !important;
+  color: white;
+}
+
+ion-item.selectItem {
+  --ion-background-color: black !important;
+  color: white;
+}
+
+ion-item.selectItem ion-select {
+  margin: 0 !important;
+  width: 40%;
+  color: black !important;
+}

@@ -1,0 +1,89 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>cars</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="setDefault()">Set Default</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p>
+    <b>!!Important!!:</b> Click "SET DEFAULT" Button, only for first time</p>
+  <h5>Update Currency Symbol</h5>
+  <ion-item>
+    <ion-label position="stacked">Currency Symbol</ion-label>
+    <ion-input [(ngModel)]="currency"></ion-input>
+    <ion-button slot="end" (click)="updateCurrency()">Update</ion-button>
+  </ion-item>
+
+  <h5>Add New Car Type</h5>
+  <p>
+    <b>Name:</b> This will display on Driver select box & rider home screen</p>
+  <p>
+    <b>Image:</b> You can use Icon path as any web URL (http://site.com/file.png) or local path like assets/img/file.png
+  </p>
+  <table>
+    <thead>
+      <th>Name</th>
+      <th>Icon Path (Local / Web)</th>
+      <th>Map Icon Path (Local / Web)</th>
+      <th>Fare / Km ({{this.currency}})</th>
+      <th>More</th>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <input type="text" [(ngModel)]="newCar.name" />
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="newCar.icon" placeholder="use full path" />
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="newCar.map_icon" placeholder="use full path" />
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="newCar.price" />
+        </td>
+        <td>
+          <ion-button fill="clear" size="small" (click)="add()">Add</ion-button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br />
+  <br />
+  <h5>All Car Types - ({{cars.length}})</h5>
+  <table>
+    <thead>
+      <th>Name</th>
+      <th>Icon Path</th>
+      <th>Map Icon Path (Local / Web)</th>
+      <th>Fare / Km ({{this.currency}})</th>
+      <th>More</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let car of cars;let i = index">
+        <td>
+          <input type="text" [(ngModel)]="cars[i].name" />
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="cars[i].icon" />
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="cars[i].map_icon" />
+        </td>
+        <td>
+          <input type="text" [(ngModel)]="cars[i].price" />
+        </td>
+        <td>
+          <ion-button fill="clear" size="small" (click)="update(i)">Save</ion-button>
+          <ion-button fill="clear" size="small" color="danger" (click)="delete(car.key)">Delete</ion-button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ion-content>

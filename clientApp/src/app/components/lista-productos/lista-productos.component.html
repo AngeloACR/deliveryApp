@@ -1,0 +1,25 @@
+<div id="restaurantCards" class="bigBox" *ngIf="productosLength">
+  <div class="cardBox" *ngFor="let producto of productos; let i = index">
+    <div class="imgBox">
+      <img class="imgResultados" [src]="producto.image" alt="" />
+    </div>
+    <div class="infoBox">
+      <p>{{'NAME' | translate}}: <br>{{producto.name}}</p><br><br>
+      <p>{{'DESCRIPTION' | translate}}: <br>{{producto.description}}</p><br><br>
+      <p>{{'PRICE' | translate}}: <br>{{producto.price}}</p><br><br>
+      <p>{{'QTY' | translate}}: <br>
+        <ion-input class="cartInput" [(ngModel)]="qtys[i]" type="number" min=1></ion-input>
+      </p><br><br>
+    </div>
+    <div class="moreBox">
+      <button type="button" (click)="agregarCarrito($event, producto, qtys[i])">
+        <p>Agregar al carrito</p>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="noFound" class="bigBox" *ngIf="!productosLength">
+  <div class="cardBox">
+    <p class="noFoundText">{{'NO_PRODUCTS' | translate}}</p>
+  </div>
+</div>

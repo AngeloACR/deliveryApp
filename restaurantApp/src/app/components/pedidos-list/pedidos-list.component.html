@@ -1,0 +1,33 @@
+<div id="pedidoCards" class="bigBox" *ngIf="pedidosLength">
+  <div class="cardBox" *ngFor="let pedido of pedidos">
+    <div class="infoBox">
+      <p>Origen: <br>{{pedido.origin.vicinity}}</p><br>
+      <p>Destino: <br>{{pedido.destination.vicinity}}</p><br>
+      <p>Productos: <br>
+        <span style="margin-left: 15px;" *ngFor="let item of pedido.carrito.productos">
+          Producto: {{item.producto.name}}, Cantidad: {{item.qty}}
+        </span><br>
+      </p><br>
+      <p>Monto total: {{pedido.carrito.montoTotal}}</p><br>
+      <p>Status: <br>{{pedido.restaurantStatus}}</p>
+    </div>
+    <div class="moreBox" *ngIf="isAceptar">
+      <button type="button" (click)="aceptarPedido($event, pedido)">
+        <p>Aceptar pedido</p>
+      </button>
+      <button type="button" (click)="rechazarPedido($event, pedido)">
+        <p>Rechazar pedido</p>
+      </button>
+    </div>
+    <div class="moreBox" *ngIf="isBuscar">
+      <button type="button" (click)="buscarConductor($event, pedido)">
+        <p>Buscar conductor</p>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="noFound" class="bigBox" *ngIf="!pedidosLength">
+  <div class="cardBox">
+    <p class="noFoundText">No hay pedidos para mostrar</p>
+  </div>
+</div>

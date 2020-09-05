@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Checkout</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+  <div class="reviewBox" *ngIf="!isPayment">
+    <div class="envioBox">
+      <p>Origen: {{origen}}</p>
+      <p>Destino: {{destino}}</p>
+    </div>
+    <div class="productosBox">
+      <p>Productos: </p>
+      <div class="productoBox" *ngFor="let item of productos">
+
+        <div class="headingBox">
+          <p class="titleText">{{item.producto.name}}<br>{{item.producto.description}}</p>
+        </div>
+        <div class="qtyBox">
+          <p>{{item.qty}}</p>
+        </div>
+      </div>
+    </div>
+    <div class="montosBox">
+      <p>Subtotal: {{montoCarrito}}</p>
+      <p>Costo del envio: {{montoCarrera}}</p>
+      <p>Total: {{montoTotal}}</p>
+    </div>
+    <div class="buttonBox">
+      <button (click)="pagar()">
+        Proceder con el pago
+      </button>
+    </div>
+  </div>
+
+  <app-payment-gateway (paymentComplete)="finishCheckout($event)" style="width: 100%; height: 100%;"
+    [amount]="montoTotal" *ngIf="isPayment">
+  </app-payment-gateway>
+
+
+</ion-content>

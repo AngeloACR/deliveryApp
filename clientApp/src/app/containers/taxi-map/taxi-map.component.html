@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Pedir taxi</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-map class="mapBox" isOrigin="true" isDestination="true" [markers]="driverMarkers"
+    (markerClicked)="openDriver($event)" setOriginAsCurrentPosition="true" (setDestination)="formatDestination($event)"
+    (setOrigin)="formatOrigin($event)" (setLocality)="setLocality($event)" (changeRoute)="changeRoute()"
+    (setRoute)="routeSelected($event)" #Map>
+  </app-map>
+
+  <div class="align-bottom" *ngIf="lookForDriver">
+
+    <p class="distanceText">
+      <span *ngIf="distanceText!=''">{{'DISTANCE' | translate}}: {{ distanceText }}</span>
+      <span *ngIf="durationText!=''">&nbsp; {{'DURATION' | translate}}: {{durationText}}</span>
+    </p>
+    <ion-row [hidden]="!destination">
+      <ion-col (click)="choosePaymentMethod1()">
+        <ion-icon name="card" color="gray"></ion-icon>
+        <span ion-text color="gray">{{ 'PAYMENTS' | translate }}</span>
+        <!-- <span ion-text color="gray">{{ getPaymentMethod() }}</span> -->
+      </ion-col>
+      <ion-col (click)="showPromoPopup()" *ngIf="destination">
+        <ion-icon name="create" color="gray"></ion-icon>
+        <span ion-text color="gray">{{'PROMO' | translate}}</span>
+      </ion-col>
+      <ion-col (click)="showNotePopup()">
+        <ion-icon name="create" color="gray"></ion-icon>
+        <span ion-text color="gray">{{'NOTE' | translate}}</span>
+      </ion-col>
+    </ion-row>
+
+    <ion-row [hidden]="!destination">
+
+      <ion-col *ngFor="let vehicle of vehicles; let i = index" [ngClass]="{'active': vehicle.active}"
+        (click)="chooseVehicle(i)">
+        <img src="{{ vehicle.icon }}">
+        <p>{{ vehicle.name }}</p>
+        <p>{{currency }}{{ vehicle.fee }}</p>
+      </ion-col>
+
+    </ion-row>
+
+
+    <ion-button expand="block" color="dark" [hidden]="destination" (click)="chooseDestination()">
+      {{'RIDE_NOW' | translate}}</ion-button>
+    <!--     <ion-button expand="block" color="dark" [hidden]="!destination" (click)="book()">
+   -->
+    <ion-button expand="block" color="dark" [hidden]="!destination" (click)="openList()">
+      <!--       {{ locateDriver == false ? rideNow: locatingDrivers}} <ion-spinner name="dots" color="light"
+          [hidden]="!locateDriver"></ion-spinner> -->
+      {{ 'SHOW_DRIVERS' | translate}}
+    </ion-button>
+  </div>
+
+  <div class="modalBox" [ngClass]="showList">
+    <app-drivers-list *ngIf="listOpened" class="showModal" [drivers]="activeDrivers" (deal)="book($event)"
+      (ver)="openDriver($event)" (salir)="closeList()"></app-drivers-list>
+  </div>
+
+  <div class="modalBox" [ngClass]="showDriver">
+    <app-driver-info *ngIf="driverOpened" class="showModal" [driverId]="selectedDriver" (salir)="closeDriver()"
+      (deal)="book($event)"></app-driver-info>
+  </div>
+
+</ion-content>

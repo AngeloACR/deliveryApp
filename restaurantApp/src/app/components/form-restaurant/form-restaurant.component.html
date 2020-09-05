@@ -1,0 +1,57 @@
+<form [formGroup]="restaurantForm" *ngIf="!isPlaceSelection" (submit)="submitRestaurant()" novalidate>
+  <ion-list class="loginForm">
+
+    <ion-item class="loginItem">
+      <ion-label stacked class="">Nombre del Restaurant</ion-label>
+      <input class="lInput" placeholder="{{'NAME' | translate }}" type="text" formControlName="name" name="name">
+    </ion-item>
+
+    <!--     <ion-item class="loginItem">
+      <ion-label stacked class="">Dirección</ion-label>
+      <input class="lInput" placeholder="{{'ADDRESS' | translate }}" type="text" formControlName="address"
+        name="address">
+    </ion-item>
+ -->
+
+    <ion-item class="loginItem">
+      <ion-label stacked class="">Descripción</ion-label>
+      <input class="lInput" placeholder="{{'DESCRIPTION' | translate }}" type="text" formControlName="description"
+        name="description">
+    </ion-item>
+
+    <ion-item class="loginItem">
+      <ion-label stacked class="">Latitud
+      </ion-label>
+      <input #locationInput class="lInput" placeholder="{{'ADDRESS' | translate }}"
+        style="width:60% !important; overflow: scroll;" type="text" formControlName="address" disabled>
+      <ion-button expand="full" color="primary" style="max-width: 40%; white-space: normal; height: 30px;" type="button"
+        (click)="selectLocation()">Seleccionar ubicación
+      </ion-button>
+    </ion-item>
+
+    <ion-item class="loginItem">
+      <ion-label stacked class="">Teléfono</ion-label>
+      <input class="lInput" placeholder="{{'TLF' | translate }}" type="text" formControlName="tlf" name="tlf">
+    </ion-item>
+
+    <div *ngIf="downloadURL != null">
+      <img src="{{downloadURL}}">
+
+    </div>
+    <ion-item class="fileItem">
+
+      <input type="file" name="restImg" (change)="onChange($event)">
+    </ion-item>
+
+  </ion-list>
+
+
+
+
+  <ion-button expand="full" color="primary" type="submit">{{'ADD_RESTAURANT' | translate }}</ion-button>
+
+
+</form>
+
+<app-restaurant-location style="width: 100%; height: 100%;" *ngIf="isPlaceSelection"
+  (placeSelected)="volverForm($event)"></app-restaurant-location>

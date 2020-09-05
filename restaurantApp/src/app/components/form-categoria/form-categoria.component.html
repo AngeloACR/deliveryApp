@@ -1,0 +1,48 @@
+<form [formGroup]="categoriaForm" (submit)="createCategoria()" novalidate>
+  <ion-list class="loginForm">
+
+    <ion-item class="loginItem">
+      <ion-label stacked class="">Nombre de la Categoría</ion-label>
+      <input class="lInput" placeholder="{{'NAME' | translate }}" type="text" formControlName="name" name="name">
+    </ion-item>
+
+    <ion-item class="loginItem">
+      <ion-label stacked class="">Descripción</ion-label>
+      <input class="lInput" placeholder="{{'DESCRIPTION' | translate }}" type="text" formControlName="description"
+        name="description">
+    </ion-item>
+
+    <ion-item class="selectItem">
+      <ion-label>Asociar restaurante</ion-label>
+      <ion-select formControlName="restaurant" okText="Ok" cancelText="Cerrar">
+        <ion-select-option *ngFor="let restaurant of restaurantes" value="{{restaurant.key}}">{{restaurant.name}}
+        </ion-select-option>
+
+      </ion-select>
+    </ion-item>
+
+
+
+    <br>
+
+
+
+
+    <div *ngIf="downloadURL != null">
+      <img src="{{downloadURL}}">
+
+    </div>
+    <ion-item class="fileItem">
+      <input type="file" name="restImg" (change)="onChange($event)">
+    </ion-item>
+
+
+  </ion-list>
+
+
+
+
+  <ion-button expand="full" color="primary" type="submit">Crear Categoría</ion-button>
+
+
+</form>

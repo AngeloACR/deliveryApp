@@ -1,0 +1,27 @@
+<div id="restaurantCards" class="bigBox" *ngIf="categoriasLength">
+  <div class="cardBox" *ngFor="let categoria of categorias">
+    <div class="imgBox">
+      <img class="imgResultados" [src]="categoria.image" alt="" />
+    </div>
+    <div class="infoBox">
+      <p>{{'NAME' | translate}}: <br>{{categoria.name}}</p><br><br>
+      <p>{{'DESCRIPTION' | translate}}: <br>{{categoria.description}}</p><br><br>
+    </div>
+    <div class="moreBox">
+      <button type="button" style="margin-bottom: 10px;" (click)="borrar($event, categoria)">
+        <p>{{'DELETE' | translate}}</p>
+      </button>
+      <button type="button" style="margin-bottom: 10px;" (click)="editar($event, categoria)">
+        <p>{{'EDIT' | translate}}</p>
+      </button>
+      <button type="button" (click)="productos($event, categoria)">
+        <p>Ver productos</p>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="noFound" class="bigBox" *ngIf="!categoriasLength">
+  <div class="cardBox">
+    <p class="noFoundText">{{'NO_CATEGORIES' | translate}}</p>
+  </div>
+</div>

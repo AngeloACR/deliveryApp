@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Home</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <app-map class="mapBox" (markerClicked)="openRestaurant($event)" [markers]="markers" #Map></app-map>
+  <div class="modalBox" [ngClass]="showRestaurant">
+    <app-rest-info *ngIf="restaurantOpened" class="showModal" [restaurantId]="selectedRestaurant"
+      (salir)="closeRestaurant()"></app-rest-info>
+  </div>
+</ion-content>

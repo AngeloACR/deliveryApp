@@ -1,0 +1,33 @@
+<ion-content class="loginPage">
+  <div class="login-header">
+    <img src="./assets/img/Logotipo.png" />
+    <h2 ion-text color="light">{{'REGISTER' | translate}}</h2>
+  </div>
+  <div class="loginContent" padding>
+    <form [formGroup]="registro" style="margin: 0; padding: 0; width: 100%; height: 100%;">
+      <ion-list class="loginForm" lines="none">
+        <ion-item class="loginItem">
+          <input class="lInput" placeholder="{{'FULLNAME' | translate }}" type="text" formControlName="name">
+        </ion-item>
+        <ion-item class="loginItem">
+          <input class="lInput" placeholder="{{'EMAIL_ADDRESS' | translate }}" type="email" formControlName="email">
+        </ion-item>
+        <ion-item class="loginItem">
+          <input class="lInput" placeholder="{{'PHONE_NUMBER' | translate }}" type="tel" formControlName="tlf">
+        </ion-item>
+        <ion-item class="loginItem">
+          <input class="lInput" placeholder="{{'ADDRESS' | translate }}" type="text" formControlName="address">
+        </ion-item>
+        <ion-item class="loginItem">
+          <input class="lInput" placeholder="{{'PASSWORD' | translate }}" type="password" formControlName="password">
+        </ion-item>
+      </ion-list>
+      <div class="buttonBox">
+        <button class="formButton" (click)="signup()">
+          {{'REGISTER' | translate}}
+        </button>
+        <button class="formButton" routerLink="/login">{{'LOGIN' | translate}}</button>
+      </div>
+    </form>
+  </div>
+</ion-content>

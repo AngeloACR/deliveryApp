@@ -1,0 +1,30 @@
+<div class="bigBox" *ngIf="productosLength">
+  <div class="cardBox" *ngFor="let item of productos; let i=index">
+    <p class="productSubtotal">{{item.subtotal}}</p>
+    <div class="imgBox">
+      <img class="imgResultados" [src]="item.image" alt="" />
+    </div>
+    <div class="contentBox">
+
+      <div class="headingBox">
+        <p class="titleText">{{item.producto.name}}<br>{{item.producto.description}}</p>
+      </div>
+      <div class="qtyBox">
+        <input type="number" [value]="item.qty" [(ngModel)]="qtys[i]" (change)="actualizar($event, i)">
+      </div>
+    </div>
+    <div class="buttonBox">
+      <button class="actionButton" (click)="eliminar($event, item)">Eliminar del carrito</button>
+    </div>
+  </div>
+  <div class="totalBox">
+    <p>
+      Monto total: {{montoTotal}}
+    </p>
+  </div>
+</div>
+<div id="noFound" class="bigBox" *ngIf="!productosLength">
+  <div class="cardBox">
+    <p class="noFoundText">{{'CART_EMPTY' | translate}}</p>
+  </div>
+</div>

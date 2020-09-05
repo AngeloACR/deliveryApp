@@ -1,0 +1,54 @@
+<app-splash class="splash" *ngIf="showSplash"></app-splash>
+
+<ion-app *ngIf="!showSplash">
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" type="overlay">
+      <ion-header>
+        <ion-toolbar class="menuToolbar">
+
+          <ion-label>Cliente Tuk</ion-label>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="menuContent">
+        <ion-list class="menuList">
+          <ion-menu-toggle>
+            <ion-item class="menuItem" *ngIf="user" routerLink="/profile">
+              <ion-avatar slot="start">
+                <img src="{{user.photoURL}}" />
+              </ion-avatar>
+              <ion-label>
+                <ion-text>
+                  <h2>{{user.displayName}}</h2>
+                </ion-text>
+                <ion-text>
+                  <p>{{user.email}}</p>
+                </ion-text>
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+            <ion-item class="menuItem" [routerDirection]="'root'" [routerLink]="[p.path]">
+              <ion-icon slot="start" [name]="p.icon"></ion-icon>
+              <ion-label>
+                {{p.title}}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle class="logoutItem" auto-hide="false">
+            <ion-item class="menuItem" (click)="logout()">
+              <!--               <ion-icon slot="start" [name]="closeIcon"></ion-icon>
+ -->
+              <ion-label>
+                {{'LOGOUT' | translate}}
+              </ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>

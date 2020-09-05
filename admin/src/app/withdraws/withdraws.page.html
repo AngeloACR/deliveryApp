@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>withdraws</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <table>
+    <thead>
+      <th>Date</th>
+      <th>Driver Info</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>Action</th>
+
+    </thead>
+    <tbody>
+      <tr *ngFor="let request of allrequests">
+        <td>{{request.createdAt | date}}</td>
+        <td>
+          <ion-button size="small" fill="clear" routerLink="/driverinfo/{{request.userId}}">{{request.name}}
+          </ion-button>
+        </td>
+        <td>{{request.amount}}</td>
+        <td>{{request.status}}</td>
+        <td>
+          <ion-button size="small" fill="clear" (click)="send(request)" *ngIf="request.status == 'PENDING'">SEND
+          </ion-button>
+          <ion-button size="small" fill="clear" color="danger" *ngIf="request.status == 'PENDING'" (click)="cancel(request.key)">CANCEL
+          </ion-button>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+</ion-content>

@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Drivers - {{drivers.length}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <table>
+    <thead>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Mobile</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let driver of drivers">
+        <td>
+          <ion-button fill="clear" size="small" routerLink="/driverinfo/{{driver.key}}">{{driver.name}}</ion-button>
+        </td>
+        <td>
+          <p>{{driver.email}}</p>
+        </td>
+        <td>
+          <p><a target="_blank" href="tel:{{driver.phoneNumber}}" *ngIf="driver.phoneNumber">{{driver.phoneNumber}}</a>
+          </p>
+        </td>
+        <td>
+          <ion-button *ngIf="!driver.isApproved" fill="clear" color="primary" size="small"
+            (click)="changeStatus(driver.key, driver.isApproved)">
+            Approve</ion-button>
+          <ion-button *ngIf="driver.isApproved" fill="clear" color="primary" size="small"
+            (click)="changeStatus(driver.key, driver.isApproved)">
+            DisApprove</ion-button>
+          <ion-button fill="clear" color="danger" size="small" (click)="delete(driver.key)">Delete</ion-button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</ion-content>

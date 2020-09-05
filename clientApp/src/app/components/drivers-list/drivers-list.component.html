@@ -1,0 +1,26 @@
+<div id="driversCards" class="bigBox" *ngIf="driversLength">
+  <p class="closeButton" (click)="cerrar()">X</p>
+  <div class="cardBox" *ngFor="let driver of drivers">
+    <div class="imgBox">
+      <img class="imgResultados" [src]="driver.imagenPerfil" alt="" />
+    </div>
+    <div class="infoBox">
+      <p>{{'NAME' | translate}}: <br>{{driver.name}}</p><br><br>
+      <p>{{'RATING' | translate}}: <br>{{driver.rating}}</p>
+    </div>
+    <div class="moreBox">
+      <button type="button" style="margin-bottom: 10px;" (click)="verDriver($event, driver)">
+        <p>{{'MORE' | translate}}</p>
+      </button>
+      <button type="button" (click)="pedirCarrera($event, driver)">
+        <p>{{'RIDE_NOW' | translate}}</p>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="noFound" class="bigBox" *ngIf="!driversLength">
+  <p class="closeButton" (click)="cerrar()">X</p>
+  <div class="cardBox">
+    <p class="noFoundText">{{'NO_DRIVERS' | translate}}</p>
+  </div>
+</div>

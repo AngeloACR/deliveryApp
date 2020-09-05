@@ -1,0 +1,57 @@
+<div class="methodsBox">
+
+  <form [formGroup]="paymentMethod" novalidate>
+    <ion-list>
+      <ion-item class="selectItem">
+        <ion-label>Seleccione su método de pago</ion-label>
+        <ion-select formControlName="method" (ionChange)="togglePayment()" okText="Ok" cancelText="Cerrar">
+          <ion-select-option value="cash">Efectivo
+          </ion-select-option>
+          <ion-select-option value="creditcard">Tarjeta de crédito
+          </ion-select-option><!-- 
+          <ion-select-option value="bank">Transferencia bancaria
+          </ion-select-option> -->
+
+        </ion-select>
+      </ion-item>
+    </ion-list>
+  </form>
+</div>
+
+<div class="ccBox" *ngIf="isCC">
+
+  <form [formGroup]="ccData" novalidate>
+    <ion-list>
+      <ion-item class="loginItem">
+
+        <ion-label stacked class="">Número de la tarjeta</ion-label>
+        <input class="lInput" placeholder="Número de la tarjeta" type="number" formControlName="number" name="number">
+      </ion-item>
+
+      <ion-item class="loginItem">
+
+        <ion-label stacked class="">Mes de expiración</ion-label>
+        <input class="lInput" (change)="lengthValidator(2)" type="number" placeholder="MM" formControlName="expMonth"
+          name="number">
+      </ion-item>
+      <ion-item class="loginItem">
+
+        <ion-label stacked class="">Año de expiración</ion-label>
+        <input class="lInput" (change)="lengthValidator(2)" type="number" placeholder="YY" formControlName="expYear"
+          name="number">
+      </ion-item>
+      <ion-item class="loginItem">
+
+        <ion-label stacked class="">Código de seguridad</ion-label>
+        <input class="lInput" (change)="lengthValidator(3)" type="number" placeholder="cvc" formControlName="cvc"
+          name="number">
+      </ion-item>
+
+    </ion-list>
+  </form>
+</div>
+
+<div *ngIf="methodSelected" class="paymentButtonBox">
+
+  <button (click)="processPayment()" type="button">Efectuar pago</button>
+</div>

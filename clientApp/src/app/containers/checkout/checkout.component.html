@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Checkout</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+
+  <app-payment-gateway style="width: 100%; height: 100%;" *ngIf="isPayment">
+  </app-payment-gateway>
+
+
+</ion-content>

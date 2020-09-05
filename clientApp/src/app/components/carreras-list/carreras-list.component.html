@@ -1,0 +1,20 @@
+<div id="carreraCards" class="bigBox" *ngIf="carrerasLength">
+  <div class="cardBox" *ngFor="let carrera of carreras">
+    <div class="infoBox">
+      <p>Origen: <br>{{carrera.origin.vicinity}}</p><br>
+      <p>Destino: <br>{{carrera.destination.vicinity}}</p><br>
+      <p>Monto: {{carrera.fee}}</p><br>
+      <p>Status: <br>{{carrera.status}}</p>
+    </div>
+    <div class="moreBox" *ngIf="isPago">
+      <button type="button" (click)="pagar($event, pedido)">
+        <p>Pagar</p>
+      </button>
+    </div>
+  </div>
+</div>
+<div id="noFound" class="bigBox" *ngIf="!carrerasLength">
+  <div class="cardBox">
+    <p class="noFoundText">No hay carreras para mostrar</p>
+  </div>
+</div>

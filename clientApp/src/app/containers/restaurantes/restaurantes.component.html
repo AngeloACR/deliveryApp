@@ -1,0 +1,22 @@
+<ion-header>
+	<ion-toolbar style="position: relative">
+		<ion-buttons slot="start">
+			<ion-menu-button></ion-menu-button>
+		</ion-buttons>
+		<ion-title>{{title}}</ion-title>
+		<img src="assets/img/carrito.png" (click)="verCarrito()"
+			style="height: 100%; position: absolute; right: 10px; top: 0;" alt="">
+	</ion-toolbar>
+</ion-header>
+<ion-content fullscreen>
+	<app-lista-restaurant #lista *ngIf="restaurantesReady && isRestaurant" [restaurantes]="restaurantes"
+		(verCategorias)="verCategorias($event)">
+	</app-lista-restaurant>
+
+	<app-lista-categorias *ngIf="categoriasReady && isCategorias" [categorias]="categorias"
+		(volver)="volverRestaurantes()" (verProductos)="verProductos($event)"></app-lista-categorias>
+
+	<app-lista-productos *ngIf="productosReady && isProductos" [productos]="productos" (volver)="volverCategorias()">
+	</app-lista-productos>
+
+</ion-content>

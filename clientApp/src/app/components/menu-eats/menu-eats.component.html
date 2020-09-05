@@ -1,0 +1,6 @@
+<app-carrito style="width: 100%; height: 100%;" *ngIf="isCarrito" (next)="selectLocation($event)">
+</app-carrito>
+
+<app-eats-destination [restLocation]="restLocation" style="width: 100%; height: 100%;" *ngIf="isPlaceSelection"
+  (placeSelected)="goToCarrito($event)">
+</app-eats-destination>
