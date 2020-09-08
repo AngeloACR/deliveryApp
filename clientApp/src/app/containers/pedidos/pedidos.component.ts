@@ -90,4 +90,6 @@ export class PedidosComponent implements OnInit {
     this.checkout.pedido = item;
     this.router.navigateByUrl("/checkouteats");
   }
+
+  showSelection() {}
 }

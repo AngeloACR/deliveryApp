@@ -59,6 +59,7 @@ import { CarrerasListComponent } from "./components/carreras-list/carreras-list.
 import { PedidosListComponent } from "./components/pedidos-list/pedidos-list.component";
 import { EatsDestinationComponent } from "./components/eats-destination/eats-destination.component";
 import { PaymentGatewayComponent } from "./components/payment-gateway/payment-gateway.component";
+import { MenuEatsComponent } from "./components/menu-eats/menu-eats.component";
 import { DriverInfoComponent } from "./components/driver-info/driver-info.component";
 import { DriverListComponent } from "./components/drivers-list/drivers-list.component";
 import { SplashComponent } from "./components/splash/splash.component";
@@ -96,6 +97,7 @@ export function customTranslateLoader(http: HttpClient) {
     HomeComponent,
     LoginComponent,
     RegistroComponent,
+    MenuEatsComponent,
     MapComponent,
     OrderHistoryComponent,
     TrackDriversComponent,
@@ -125,6 +127,7 @@ export function customTranslateLoader(http: HttpClient) {
     CheckoutEatsComponent,
     CheckoutTaxiComponent,
     MapComponent,
+    MenuEatsComponent,
     CarritoComponent,
     EatsDestinationComponent,
     PaymentGatewayComponent,

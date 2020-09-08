@@ -126,4 +126,6 @@ export class PaymentGatewayComponent implements OnInit {
     }
     this.methodSelected = true;
   }
+
+  lengthValidator(maxCharacters) {}
 }

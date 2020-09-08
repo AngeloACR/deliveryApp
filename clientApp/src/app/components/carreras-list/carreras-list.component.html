@@ -7,7 +7,7 @@
       <p>Status: <br>{{carrera.status}}</p>
     </div>
     <div class="moreBox" *ngIf="isPago">
-      <button type="button" (click)="pagar($event, pedido)">
+      <button type="button" (click)="pagar($event, carrera)">
         <p>Pagar</p>
       </button>
     </div>

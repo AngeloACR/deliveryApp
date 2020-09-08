@@ -10,7 +10,7 @@
     <span *ngIf="durationText!=''">&nbsp; {{'DURATION' | translate}}: {{durationText}}</span>
   </p>
   <ion-row [hidden]="!destination">
-    <ion-col (click)="choosePaymentMethod1()">
+    <ion-col (click)="choosePaymentMethod()">
       <ion-icon name="card" color="gray"></ion-icon>
       <span ion-text color="gray">{{ 'PAYMENTS' | translate }}</span>
       <!-- <span ion-text color="gray">{{ getPaymentMethod() }}</span> -->
@@ -37,8 +37,8 @@
   </ion-row>
 
 
-  <ion-button expand="block" color="dark" [hidden]="destination" (click)="chooseDestination()">
-    {{'RIDE_NOW' | translate}}</ion-button>
+<!--   <ion-button expand="block" color="dark" [hidden]="destination" (click)="chooseDestination()">
+    {{'RIDE_NOW' | translate}}</ion-button> -->
   <!--     <ion-button expand="block" color="dark" [hidden]="!destination" (click)="book()">
    -->
   <ion-button expand="block" color="dark" [hidden]="!destination" (click)="openList()">

@@ -37,7 +37,7 @@ export class DriverInfoComponent implements OnInit {
     this.salir.emit();
   }
 
-  pedirCarrera(event, driver) {
+  pedirCarrera() {
     this.deal.emit(this.driverId);
   }
 }
