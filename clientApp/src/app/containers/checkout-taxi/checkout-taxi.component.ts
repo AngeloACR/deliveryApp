@@ -11,6 +11,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import { CheckoutService } from "../../services/checkout.service";
+import { CommonService } from "../../services/common.service";
 import { CarrerasService } from "../../services/carreras.service";
 
 @Component({
@@ -29,6 +30,7 @@ export class CheckoutTaxiComponent implements OnInit {
     private translate: TranslateService,
     private auth: AuthService,
     private router: Router,
+    private common: CommonService,
     private checkout: CheckoutService,
     private carreras: CarrerasService
   ) {
@@ -37,9 +39,9 @@ export class CheckoutTaxiComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.carrera = this.checkout.carrera;
     this.montoCarrera = this.carrera.fee;
     this.montoTotal = this.montoCarrera;
-    this.carrera = this.checkout.carrera;
     this.origen = this.carrera.origin.vicinity;
     this.destino = this.carrera.destination.vicitiny;
   }

@@ -1,7 +1,6 @@
-<app-splash class="splash" *ngIf="showSplash"></app-splash>
-<ion-app *ngIf="!showSplash">
+<ion-app>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+    <ion-menu *ngIf="!showSplash" contentId="main-content" type="overlay">
       <ion-header>
         <ion-toolbar class="menuToolbar">
 
@@ -9,7 +8,8 @@
         </ion-toolbar>
       </ion-header>
       <ion-content class="menuContent">
-        <ion-list class="menuList"><!-- 
+        <ion-list class="menuList">
+          <!-- 
           <ion-menu-toggle>
             <ion-item class="menuItem" *ngIf="user" routerLink="/perfil">
               <ion-avatar slot="start">

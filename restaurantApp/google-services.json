@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "451399025593",
+    "firebase_url": "https://tukonline-3c1f8.firebaseio.com",
+    "project_id": "tukonline-3c1f8",
+    "storage_bucket": "tukonline-3c1f8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451399025593:android:065ee09a8cb3b27af8ec68",
+        "android_client_info": {
+          "package_name": "com.tuk.cliente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451399025593-1nerqeohbiinenptn7pn4mhbv1v5vm5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCESog8sJJfQIHsiM8FVa0xVwGqnMGaKLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451399025593-1nerqeohbiinenptn7pn4mhbv1v5vm5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451399025593:android:f4fcefc47b4e15e2f8ec68",
+        "android_client_info": {
+          "package_name": "com.tuk.conductor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451399025593-1nerqeohbiinenptn7pn4mhbv1v5vm5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCESog8sJJfQIHsiM8FVa0xVwGqnMGaKLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451399025593-1nerqeohbiinenptn7pn4mhbv1v5vm5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451399025593:android:a3b7d9a7e898c0b6f8ec68",
+        "android_client_info": {
+          "package_name": "com.tuk.restaurant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451399025593-1nerqeohbiinenptn7pn4mhbv1v5vm5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCESog8sJJfQIHsiM8FVa0xVwGqnMGaKLw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451399025593-1nerqeohbiinenptn7pn4mhbv1v5vm5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

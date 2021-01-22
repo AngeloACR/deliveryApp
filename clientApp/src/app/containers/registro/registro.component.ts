@@ -11,6 +11,7 @@ import {
   FormArray,
   Validators
 } from "@angular/forms";
+import { ConfirmPasswordValidator } from "../../directives/must-match.validator";
 
 @Component({
   selector: "app-registro",
@@ -33,13 +34,17 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.registro = new FormGroup({
-      name: new FormControl(""),
-      email: new FormControl(""),
-      address: new FormControl(""),
-      tlf: new FormControl(""),
-      password: new FormControl("")
-    });
+    this.registro = new FormGroup(
+      {
+        name: new FormControl(""),
+        email: new FormControl(""),
+        address: new FormControl(""),
+        tlf: new FormControl(""),
+        password: new FormControl(""),
+        cpassword: new FormControl("")
+      },
+      ConfirmPasswordValidator.MatchPassword
+    );
   }
 
   async signup() {
@@ -52,11 +57,14 @@ export class RegistroComponent implements OnInit {
         address: dataAux.address,
         password: dataAux.password
       };
-
-      this.auth.register(dataValues).then(() => {
+      await this.auth.register(dataValues);
+      this.router.navigateByUrl("/login");
+      this.common.showToast("Cuenta creada");
+      /*     this.auth.register(dataValues).then(() => {
         this.router.navigateByUrl("/login");
         this.common.showToast("Account Created");
       });
+ */
     } catch (error) {
       this.common.showToast(error.message);
     }

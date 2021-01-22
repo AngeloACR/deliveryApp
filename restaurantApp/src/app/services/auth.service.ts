@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AngularFireDatabase } from "@angular/fire/database";
 import { AngularFireAuth } from "@angular/fire/auth";
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
 import { Observable } from "rxjs";
 import { Storage } from "@ionic/storage";
 import {
@@ -17,27 +18,53 @@ export class AuthService {
   constructor(
     private db: AngularFireDatabase,
     private afAuth: AngularFireAuth,
+    private fcm: FCM,
     private storage: Storage
   ) {}
 
   async login(email: string, pass: string) {
-    let authData = await this.afAuth.auth.signInWithEmailAndPassword(
-      email,
-      pass
-    );
-    let uid = authData.user.uid;
-    let snap = await this.getUser(uid)
-      .snapshotChanges()
-      .pipe(take(1))
-      .toPromise();
-    let key = snap.key;
-    let val: any = snap.payload.val();
-    let user = { key, ...val };
-    await this.storeAuthData(user);
-    await this.setUId(uid);
-    await this.setStatus(true);
+    try {
+      let authData = await this.afAuth.auth.signInWithEmailAndPassword(
+        email,
+        pass
+      );
+      let uid = authData.user.uid;
+      let snap = await this.getUser(uid)
+        .snapshotChanges()
+        .pipe(take(1))
+        .toPromise();
+      let key = snap.key;
+      let val: any = snap.payload.val();
+      let user = { key, ...val };
+      await this.storeAuthData(user);
+      await this.setUId(uid);
+      await this.setStatus(true);
+      await this.getFCMToken(uid);
+    } catch (error) {
+      console.log(error.toString());
+      throw error;
+    }
   }
 
+  async setToken(token) {
+    let uid = await this.getUId();
+    this.db.object("passengers/" + uid).update({
+      token: token
+    });
+  }
+
+  async getFCMToken(uid) {
+    try {
+      let token = await this.fcm.getToken();
+      console.log(`token: ${token}`);
+      this.db.object("owners/" + uid).update({
+        token: token
+      });
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
+  }
   async storeAuthData(authData) {
     await this.storage.set("authData", JSON.stringify(authData));
   }
@@ -66,10 +93,42 @@ export class AuthService {
     return this.afAuth.auth.sendPasswordResetEmail(email);
   }
 
-  register(userInfo) {
-    let email: string = userInfo.email;
-    let password: string = userInfo.password;
-    return this.afAuth.auth
+  async register(userInfo) {
+    try {
+      let email: string = userInfo.email;
+      let password: string = userInfo.password;
+      let authData = await this.afAuth.auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      console.log(authData);
+      userInfo.uid = authData.user.uid;
+      userInfo.photoURL = DEFAULT_AVATAR;
+      userInfo.isPhoneVerified = false;
+
+      this.getUserData().updateProfile({
+        displayName: userInfo.name,
+        photoURL: DEFAULT_AVATAR
+      });
+      let userData = {
+        address: userInfo.address,
+        name: userInfo.name,
+        displayName: userInfo.name,
+        phone: userInfo.phoneNumber,
+        ownerId: userInfo.uid,
+        uid: userInfo.uid,
+        email: userInfo.email,
+        photoURL: DEFAULT_AVATAR,
+        status: "active",
+        facebook: false,
+        first: "true"
+      };
+      this.updateUserProfile(userData);
+
+      if (EMAIL_VERIFICATION_ENABLED)
+        this.getUserData().sendEmailVerification();
+
+      /*     return this.afAuth.auth
       .createUserWithEmailAndPassword(email, password)
       .then((authData: any) => {
         // update driver object
@@ -100,6 +159,8 @@ export class AuthService {
         if (EMAIL_VERIFICATION_ENABLED === true)
           this.getUserData().sendEmailVerification();
       });
+ */
+    } catch (error) {}
   }
 
   sendVerification() {

@@ -4,7 +4,8 @@ import { CarritoService } from "../../services/carrito.service";
 import { PedidosService } from "../../services/pedidos.service";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
-import { $ } from "protractor";
+import { CommonService } from "../../services/common.service";
+import { PushService } from "../../services/push.service";
 
 @Component({
   selector: "app-review-pedido",
@@ -30,6 +31,8 @@ export class ReviewPedidoComponent implements OnInit {
     private auth: AuthService,
     public router: Router,
     public zone: NgZone,
+    private push: PushService,
+    private common: CommonService,
     private carritoService: CarritoService,
     private pedidosService: PedidosService
   ) {}
@@ -68,12 +71,16 @@ export class ReviewPedidoComponent implements OnInit {
     };
     let uid = await this.auth.getUId();
     let restaurantId = this.carritoService.restaurant.key;
-    this.pedidosService.makeEatsDeal(
+    let pedido = this.pedidosService.makeEatsDeal(
       restaurantId,
       this.restLocation,
       this.destino,
       this.note,
       carrito
+    );
+    this.push.pushCrearPedido(pedido);
+    this.common.showToast(
+      "Pedido creado con exito, espere unos minutos por la respuesta del restaurant"
     );
     this.router.navigateByUrl("/restaurantes");
   }

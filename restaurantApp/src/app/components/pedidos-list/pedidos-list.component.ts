@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { PedidosService } from "../../services/pedidos.service";
+import { CommonService } from "../../services/common.service";
+import { PushService } from "../../services/push.service";
 
 @Component({
   selector: "app-pedidos-list",
@@ -27,7 +29,11 @@ export class PedidosListComponent implements OnInit {
 
   pedidosLength: any;
 
-  constructor(private pedidosService: PedidosService) {}
+  constructor(
+    private pedidosService: PedidosService,
+    private push: PushService,
+    private common: CommonService
+  ) {}
 
   ngOnInit() {
     console.log("Opening pedidos list");
@@ -38,15 +44,23 @@ export class PedidosListComponent implements OnInit {
   }
 
   aceptarPedido(event, pedido) {
+    console.log("here");
     this.pedidosService.aceptarPedidos(pedido);
+    this.push.pushAceptarPedido(pedido);
+    this.common.showToast(
+      "Pedido aceptado, espere por la confirmación del pago para procesarlo"
+    );
     this.actualizar.emit();
   }
   rechazarPedido(event, pedido) {
+    console.log("here2");
     this.pedidosService.rechazarPedidos(pedido);
+    this.push.pushRechazarPedido(pedido);
+    this.common.showToast("Pedido rechazado");
     this.actualizar.emit();
   }
 
-  volverVista() {
+  volverRestaurantes() {
     this.volver.emit();
   }
 

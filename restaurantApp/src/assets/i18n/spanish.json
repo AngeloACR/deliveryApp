@@ -244,5 +244,6 @@
   "MODEL": "Modelo",
   "PLATE": "Placa",
   "NO_DRIVER": "No se encontraron conductores disponibles",
-  "FETCHING": "Cargando datos..."
+  "FETCHING": "Cargando datos...",
+  "CONFIRM_PASSWORD": "Confirmar contraseña"
 }

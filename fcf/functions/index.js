@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 // update your stipe key here
 const stripe = require("stripe")("sk_live_sWmijyyZQcahJClYg8TVRp2D");
+const cors = require('cors')({ origin: true });
 
 const TRIP_STATUS_GOING = 'going';
 const TRIP_STATUS_FINISHED = 'finished';
@@ -10,7 +11,7 @@ const PAYMENT_METHOD_CARD = 'card';
 // init app
 admin.initializeApp();
 
-exports.payWithStripe = functions.https.onRequest((request, response) => {
+exports.payWithStripe = functions.region('us-central1').https.onRequest((request, response) => {
     // Set your secret key: remember to change this to your live secret key in production
     // See your keys here: https://dashboard.stripe.com/account/apikeys
 
@@ -54,110 +55,767 @@ exports.calculateRating = functions.database.ref('/trips/{tripId}').onWrite(func
         });
         return true;
     }
-
-
 });
 
+getClient = async function (id) {
+    return new Promise((resolve, reject) => {
+        admin.database().ref(`passengers/${id}`).once('value').then(function (snapshot) {
+            let data = snapshot.val();
+            resolve(data);
+        })
+    });
 
-// calculate driver report
-exports.makeReport = functions.database.ref('/trips/{tripId}').onWrite(function (change, context) {
-    // Exit when the data is deleted.
-    if (!change.before.val()) {
-        return false;
-    }
+}
 
-    // Grab the current value of what was written to the Realtime Database
-    const original = change.after.val();
+getDriver = async function (id) {
+    return new Promise((resolve, reject) => {
+        admin.database().ref(`drivers/${id}`).once('value').then(function (snapshot) {
+            let data = snapshot.val();
+            resolve(data);
+        })
+    });
 
-    // get old status
-    const oldStatus = change.before.child('status').val();
+}
 
-    console.log(original);
-    console.log(oldStatus);
+getRestaurant = async function (id) {
+    return new Promise((resolve, reject) => {
+        admin.database().ref(`restaurants/${id}`).once('value').then(function (snapshot) {
+            let data = snapshot.val();
+            resolve(data);
+        })
+    });
 
-    if (original.status == TRIP_STATUS_GOING) {
+}
 
-        var fee = parseFloat(original.fee).toFixed(2);
+getOwner = async function (id) {
+    return new Promise((resolve, reject) => {
+        admin.database().ref(`owners/${id}`).once('value').then(function (snapshot) {
+            let data = snapshot.val();
+            resolve(data);
+        })
+    });
 
-        // process payment
-        if (original.paymentMethod == PAYMENT_METHOD_CARD) {
-            // update driver balance
-            admin.database().ref('drivers/' + original.driverId + '/balance').once('value').then(function (snapshot) {
-                if (snapshot != null && snapshot != undefined && snapshot != NaN) {
-                    var snapshotVal = snapshot.val() ? parseFloat(snapshot.val()) : 0;
-                    var total = parseFloat(snapshotVal) + parseFloat(fee);
-                    var tmptotal = total.toFixed(2);
-                    admin.database().ref('drivers/' + original.driverId + '/balance').set(tmptotal);
-                }
-            });
+}
 
-            // format currency
-            if (original.currency == '$') {
-                const currency = 'usd';
-                admin.database().ref('passengers/' + original.passengerId + '/card').once('value').then(function (snapshot) {
-                    stripe.charges.create({
-                        amount: fee,
-                        currency: currency,
-                        source: snapshot.val(),
-                        description: "Charge for tripId: " + context.params.tripId
-                    }, { idempotency_key: context.params.tripId }, function (err, charge) {
-                        console.error(err);
-                        console.log(charge);
-                    });
-                });
-            } else {
-                console.log('Currency ' + original.currency + ' is not supported');
-            }
+exports.pushCrearCarrera = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let carrera = data.carrera
+
+    let cliente = await getClient(carrera.client)
+
+    let driver = await getDriver(carrera.driver)
+
+    console.log(driver);
+    let usuario;
+    let token = driver.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `${cliente.name} te ha pedido una carrera`,
+            body: message,
+            sound: "default"
         }
-    }
+    };
 
-    if ((original.status == TRIP_STATUS_FINISHED) && (oldStatus == TRIP_STATUS_GOING)) {
-        console.log("Creating Report");
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
 
-        var date = new Date();
-        var fee = parseFloat(original.fee).toFixed(2);
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
 
-        // total sale
-        admin.database().ref('reports/' + original.driverId + '/total').once('value').then(function (snapshot) {
-            var snapshotVal = snapshot.val() ? parseFloat(snapshot.val()) : 0;
-            var tmptotal = parseFloat(parseFloat(snapshotVal) + fee).toFixed(2);
+});
 
-            admin.database().ref('reports/' + original.driverId + '/total').set(tmptotal);
-        });
+exports.pushCrearPedido = functions.region('us-central1').https.onCall(async (data, context) => {
 
-        // by year
-        var yearPath = 'reports/' + original.driverId + '/' + date.getFullYear();
-        admin.database().ref(yearPath + '/total').once('value').then(function (snapshot) {
-            var snapshotVal = snapshot.val() ? parseFloat(snapshot.val()) : 0;
-            var tmptotal = parseFloat(parseFloat(snapshotVal) + fee).toFixed(2);
+    let pedido = data.pedido
+    let restaurant = await getRestaurant(pedido.restaurantId)
 
-            admin.database().ref(yearPath + '/total').set(tmptotal);
-        });
+    let cliente = await getClient(pedido.client)
 
-        // by month
-        var monthPath = yearPath + '/' + (date.getMonth() + 1);
-        admin.database().ref(monthPath + '/total').once('value').then(function (snapshot) {
-            var snapshotVal = snapshot.val() ? parseFloat(snapshot.val()) : 0;
-            var tmptotal = parseFloat(parseFloat(snapshotVal) + fee).toFixed(2);
-
-            admin.database().ref(monthPath + '/total').set(tmptotal);
-        });
-
-        // by date
-        var datePath = monthPath + '/' + date.getDate();
-        admin.database().ref(datePath + '/total').once('value').then(function (snapshot) {
-            var snapshotVal = snapshot.val() ? parseFloat(snapshot.val()) : 0;
-            var tmptotal = parseFloat(parseFloat(snapshotVal) + fee).toFixed(2);
-
-            admin.database().ref(datePath + '/total').set(tmptotal);
-        });
+    let owner = await getOwner(restaurant.ownerId)
 
 
-        return true;
-    }
-    else {
-        console.log("Skip Make Report")
-        return false;
+    let usuario;
+    let token = owner.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `${cliente.name} te ha hecho un pedido`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushCrearDelivery = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let driver = await getDriver(pedido.driverId)
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let token = driver.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `${restaurant} te ha pedido un delivery`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushAceptarCarrera = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    try {
+
+        let carrera = data.carrera
+        let driver = await getDriver(carrera.driver)
+
+        let cliente = await getClient(carrera.client)
+        console.log("Aceptando carrera")
+
+        let usuario;
+        let token = cliente.token;
+        let message = '';
+        // Create a notification
+        const payload = {
+            notification: {
+                title: `La carrera ha sido aceptada, hora de realizar el pago`,
+                body: message,
+                sound: "default"
+            }
+        };
+
+
+        //Create an options object that contains the time to live for the notification and the priority
+        const options = {
+            priority: "high",
+            timeToLive: 60 * 60 * 24
+        };
+
+        let pushdata = await admin.messaging().sendToDevice(token, payload);
+        return pushdata;
+    } catch (e) {
+        console.log(e.toString());
     }
 
 });
+
+exports.pushAceptarPedido = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.carrera
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let cliente = await getClient(pedido.client)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = cliente.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El pedido ha sido aceptado, hora de realizar el pago`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushAceptarDelivery = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let driver = await getDriver(pedido.driverId)
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = owner.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El delivery ha sido aceptado, hora de aceptar el pedido`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushCancelarCarrera = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let carrera = data.carrera
+    let driver = await getDriver(carrera.driver)
+
+    let cliente = await getClient(carrera.client)
+
+
+    let usuario;
+    let token = driver.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `La carrera ha sido cancelada`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushCancelarPedido = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let cliente = await getClient(pedido.client)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = owner.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El pedido ha sido cancelado`,
+            body: message,
+            sound: "default"
+        }
+    };
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushCancelarDelivery = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let driver = await getDriver(pedido.driverId)
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = driver.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El delivery ha sido cancelado`,
+            body: message,
+            sound: "default"
+        }
+    };
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushRechazarCarrera = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let carrera = data.carrera
+    let driver = await getDriver(carrera.driver)
+
+    let cliente = await getClient(carrera.client)
+
+
+    let usuario;
+    let token = cliente.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `La carrera ha sido rechazada, hora de buscar otro conductor`,
+            body: message,
+            sound: "default"
+        }
+    };    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushRechazarPedido = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let cliente = await getClient(pedido.client)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = cliente.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El pedido ha sido rechazado, hora de realizar otro pedido`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushRechazarDelivery = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let driver = await getDriver(pedido.driverId)
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = owner.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El delivery ha sido rechazado, hora de buscar otro conductor`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushCarreraPagada = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let carrera = data.carrera
+    let driver = await getDriver(carrera.driver)
+
+    let cliente = await getClient(carrera.client)
+
+
+    let usuario;
+    let token = driver.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `La carrera ha sido pagada, hora de salir a buscar al cliente`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushPedidoPagado = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let cliente = await getClient(pedido.client)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = owner.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El pedido ha sido pagado, hora de encender las brasas`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushPedidoListo = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let driver = await getDriver(pedido.driverId)
+
+    let cliente = await getClient(pedido.client)
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = [driver.token, cliente.token];
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El pedido está listo para recoger`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushDeliveryEnDestino = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let driver = await getDriver(pedido.driverId)
+
+    let cliente = await getClient(pedido.client)
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = [owner.token, cliente.token];
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El conductor ha llegado al punto de destino`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushDeliveryEnOrigen = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let driver = await getDriver(pedido.driverId)
+
+    let cliente = await getClient(pedido.client)
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = [owner.token, cliente.token];
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El conductor ha llegado al punto de origen`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushConductorEnDestino = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let carrera = data.carrera
+    let driver = await getDriver(carrera.driver)
+
+    let cliente = await getClient(carrera.client)
+
+
+    let usuario;
+    let token = cliente.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El conductor ha llegado al punto de destino`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushConductorEnOrigen = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let carrera = data.carrera
+    let driver = await getDriver(carrera.driver)
+
+    let cliente = await getClient(carrera.client)
+
+
+    let usuario;
+    let token = cliente.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El conductor ha llegado al punto de origen`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushConductorEnCamino = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let carrera = data.carrera
+    let driver = await getDriver(carrera.driver)
+
+    let cliente = await getClient(carrera.client)
+
+
+    let usuario;
+    let token = cliente.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El conductor se encuentra en camino`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+
+exports.pushConductorEnCamino = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let carrera = data.carrera
+    let driver = await getDriver(carrera.driver)
+
+    let cliente = await getClient(carrera.client)
+
+
+    let usuario;
+    let token = cliente.token;
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El delivery se encuentra en camino`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+
+exports.pushPedidoEnProceso = functions.region('us-central1').https.onCall(async (data, context) => {
+
+    let pedido = data.pedido
+    let driver = await getDriver(pedido.driverId)
+
+    let cliente = await getClient(pedido.client)
+
+    let restaurant = await getRestaurant(pedido.restaurantId)
+
+    let owner = await getOwner(restaurant.ownerId)
+
+
+    let usuario;
+    let token = [cliente.token, driver.token];
+    let message = '';
+    // Create a notification
+    const payload = {
+        notification: {
+            title: `El pedido está en proceso y estará listo en unos minutos`,
+            body: message,
+            sound: "default"
+        }
+    };
+
+    //Create an options object that contains the time to live for the notification and the priority
+    const options = {
+        priority: "high",
+        timeToLive: 60 * 60 * 24
+    };
+
+    let pushdata = await admin.messaging().sendToDevice(token, payload);
+    return pushdata;
+
+});
+

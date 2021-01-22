@@ -121,5 +121,9 @@ export class PedidosService {
       fee: fee,
       driverId: driverId
     });
+    pedido.distance = distance;
+    pedido.fee = fee;
+    pedido.driverId = driverId;
+    return pedido;
   }
 }

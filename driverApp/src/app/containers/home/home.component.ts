@@ -4,6 +4,7 @@ import { PlacesService } from "../../services/places.service";
 import { DriversService } from "../../services/drivers.service";
 import { CommonService } from "../../services/common.service";
 import { MapComponent } from "../../components/map/map.component";
+import { Router } from "@angular/router";
 import {
   AUDIO_PATH,
   PLAY_AUDIO_ON_REQUEST,
@@ -29,6 +30,7 @@ export class HomeComponent implements OnInit {
     private geolocation: Geolocation,
     private placesService: PlacesService,
     private driversService: DriversService,
+    private router: Router,
     private commonService: CommonService
   ) {}
 
@@ -46,7 +48,7 @@ export class HomeComponent implements OnInit {
   async initHome() {
     try {
       this.driver = await this.driversService.getDriver();
-      console.log(this.driver)
+      console.log(this.driver);
       /*         .snapshotChanges()
         .pipe(take(1))
         .toPromise();
@@ -62,8 +64,10 @@ export class HomeComponent implements OnInit {
  */
 
       if (!this.driver || !this.driver.type) {
-        this.commonService.showAlert(
-          "Perfil incompleto, por favor rellene los datos faltantes"
+        this.commonService.showFirstTime(
+          "Perfil incompleto, por favor rellene los datos faltantes",
+          "Entendido",
+          this.router.navigateByUrl("/perfil")
         );
         console.log("Driver profile incomplete");
       } else {

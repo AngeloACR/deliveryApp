@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { CommonService } from "../../services/common.service";
 
 @Component({
   selector: "app-drivers-list",
@@ -20,7 +21,7 @@ export class DriverListComponent implements OnInit {
 
   driversLength: any;
 
-  constructor() {}
+  constructor(private common: CommonService) {}
 
   ngOnInit() {
     console.log("Opening drivers list");

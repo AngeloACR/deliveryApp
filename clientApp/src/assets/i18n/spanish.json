@@ -246,5 +246,6 @@
   "NO_PRODUCTS": "No se encontraron productos asociadas a esta categoría",
   "PRICE": "Precio",
   "CART_EMPTY": "El carrito está vacio",
-  "QTY": "Cantidad"
+  "QTY": "Cantidad",
+  "CONFIRM_PASSWORD": "Confirmar contraseña"
 }

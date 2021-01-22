@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild } from "@angular/core";
 import { PedidosListComponent } from "../../components/pedidos-list/pedidos-list.component";
 import { PedidosService } from "../../services/pedidos.service";
 import { RestaurantesService } from "../../services/restaurantes.service";
+import { CommonService } from "../../services/common.service";
+import { PushService } from "../../services/push.service";
+
 @Component({
   selector: "app-pedidos",
   templateUrl: "./pedidos.component.html",
@@ -35,15 +38,17 @@ export class PedidosComponent implements OnInit {
 
   constructor(
     private pedidosService: PedidosService,
-    private res: RestaurantesService
+    private res: RestaurantesService,
+    private push: PushService,
+    private common: CommonService
   ) {}
 
   async ngOnInit() {}
 
-  async togglePedidos(event, status) {
+  async togglePedidos(status) {
     this.dismissButtons();
+    await this.pedidosService.setPedidos(this.restaurantId);
     this.currentStatus = status;
-    let pedidos = this.pedidosService.pedidos;
     switch (status) {
       case "accepted":
         this.isBuscar = true;
@@ -64,16 +69,14 @@ export class PedidosComponent implements OnInit {
         };
         break;
     }
+    let pedidos = this.pedidosService.pedidos;
     this.pedidos = [];
     pedidos.forEach(pedido => {
       if (pedido.restaurantStatus == status) {
         this.pedidos.push(pedido);
       }
     });
-
-    this.showPedidos = true;
-    this.list.pedidos = this.pedidos;
-    this.list.ngOnInit();
+    this.verPedidos = true;
   }
 
   dismissButtons() {
@@ -98,11 +101,9 @@ export class PedidosComponent implements OnInit {
 
   async mostrarPedidos(restaurantId) {
     this.restaurantId = restaurantId;
-    await this.pedidosService.setPedidos(restaurantId);
-    this.togglePedidos("", this.currentStatus);
     this.escogerRestaurant = false;
     this.buscarConductor = false;
-    this.verPedidos = true;
+    await this.togglePedidos(this.currentStatus);
   }
 
   volverRestaurant() {
@@ -123,15 +124,21 @@ export class PedidosComponent implements OnInit {
   }
 
   solicitarCarrera(data) {
-    this.pedidosService.pedirConductor(
+    let pedido = this.pedidosService.pedirConductor(
       this.pedido,
       data.distance,
       data.fee,
       data.driverId
     );
+    this.push.pushCrearDelivery(pedido);
+    this.common.showToast(
+      "Delivery solicitado, espere a que el conductor confirme su disponibilidad"
+    );
   }
 
-  async actualizarPedidos() {
-    await this.ngOnInit();
+  async actualizarPedidos(event, status) {
+    await this.togglePedidos(status);
+    this.list.pedidos = this.pedidos;
+    this.list.ngOnInit();
   }
 }

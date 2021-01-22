@@ -8,15 +8,14 @@
 </ion-header>
 <ion-content>
   <div class="typesBox">
-    <button class="typeButton" [ngClass]="pendingButton" (click)="toggleCarreras($event, 'pending')">Carreras
+    <button class="typeButton" [ngClass]="pendingButton" (click)="actualizarCarreras($event, 'pending')">Carreras
       pendientes</button>
-    <button class="typeButton" [ngClass]="acceptedButton" (click)="toggleCarreras($event, 'accepted')">Carreras
+    <button class="typeButton" [ngClass]="acceptedButton" (click)="actualizarCarreras($event, 'accepted')">Carreras
       aceptadas</button>
-    <button class="typeButton" [ngClass]="rejectedButton" (click)="toggleCarreras($event, 'rejected')">Carreras
+    <button class="typeButton" [ngClass]="rejectedButton" (click)="actualizarCarreras($event, 'rejected')">Carreras
       rechazadas</button>
 
   </div>
-  <app-carreras-list *ngIf="showCarreras" [isPago]="isPago" (makePago)="goToPayment($event)" [carreras]="carreras"
-    (volver)="showSelection()">
+  <app-carreras-list *ngIf="showCarreras" [isPago]="isPago" (makePago)="goToPayment($event)" [carreras]="carreras">
   </app-carreras-list>
 </ion-content>

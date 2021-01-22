@@ -21,6 +21,12 @@
         <ion-item class="loginItem">
           <input class="lInput" placeholder="{{'PASSWORD' | translate }}" type="password" formControlName="password">
         </ion-item>
+        <ion-item class="loginItem">
+          <input class="lInput" placeholder="{{'CONFIRM_PASSWORD' | translate }}" type="password"
+            formControlName="cpassword">
+        </ion-item>
+        <div class="errorTag" *ngIf="registro.controls.cpassword.errors?.ConfirmPassword">Las contraseñas deben
+          coincidir</div>
       </ion-list>
       <div class="buttonBox">
         <button class="formButton" (click)="signup()">

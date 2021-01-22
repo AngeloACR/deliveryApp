@@ -6,6 +6,24 @@
   margin-bottom: 10px;
   margin-top: 10px;
 }
+
+.deleteStop {
+  width: 25px;
+  text-align: center;
+  font-size: 25px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  color: red;
+  background-color: white;
+  border-radius: 80px;
+}
+
+.deleteStop:active {
+  background-color: red;
+  color: white;
+}
+
 .mapItem input {
   min-width: 60%;
   max-width: 100%;
@@ -29,6 +47,9 @@
 .inputsBox {
   display: flex;
   flex-direction: column;
+  min-height: 40vh;
+  max-height: 50vh;
+  overflow-y: scroll;
 }
 
 .inputsBox button {

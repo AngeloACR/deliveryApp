@@ -2,6 +2,7 @@ import { Router } from "@angular/router";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { PedidosListComponent } from "../../components/pedidos-list/pedidos-list.component";
 import { CheckoutService } from "../../services/checkout.service";
+import { CommonService } from "../../services/common.service";
 import { PedidosService } from "../../services/pedidos.service";
 @Component({
   selector: "app-pedidos",
@@ -28,18 +29,19 @@ export class PedidosComponent implements OnInit {
 
   constructor(
     private pedidosService: PedidosService,
+    private common: CommonService,
     private router: Router,
     private checkout: CheckoutService
   ) {}
 
   async ngOnInit() {
-    await this.pedidosService.setPedidos();
-    this.togglePedidos("", this.currentStatus);
+    this.togglePedidos(this.currentStatus);
   }
 
-  async togglePedidos(event, status) {
+  async togglePedidos(status) {
     this.dismissButtons();
     this.currentStatus = status;
+    await this.pedidosService.setPedidos();
     let pedidos = this.pedidosService.pedidos;
     switch (status) {
       case "accepted":
@@ -68,8 +70,6 @@ export class PedidosComponent implements OnInit {
     });
 
     this.showPedidos = true;
-    this.list.pedidos = this.pedidos;
-    this.list.ngOnInit();
   }
 
   dismissButtons() {
@@ -91,5 +91,9 @@ export class PedidosComponent implements OnInit {
     this.router.navigateByUrl("/checkouteats");
   }
 
-  showSelection() {}
+  async actualizarPedidos(event, status) {
+    await this.togglePedidos(status);
+    this.list.pedidos = this.pedidos;
+    this.list.ngOnInit();
+  }
 }

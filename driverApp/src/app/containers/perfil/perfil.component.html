@@ -27,6 +27,7 @@
   <div class="ion-padding">
     <div *ngIf="isProfile">
       <div style="text-align: center;">
+        Foto de perfil
         <img src="{{ user.photoURL }}" style="width:50px;height:50px;border-radius:100px" (click)="chooseFile()">
         <form ngNoForm>
           <input id="avatar" name="file" type="file" (change)="upload()">
@@ -80,8 +81,8 @@
         </ion-item>
       </ion-list>
     </div>
-    <div *ngIf="'isDocs'">
-      <p *ngIf="user.docsURL">Your Uploaded File:
+    <div *ngIf="isDocs">
+      <p *ngIf="user.docsURL">{{'UPLOADED_FILES' | translate}}:
         <a href="{{user.docsURL}}" target="_blank">{{'DOWNLOAD' | translate}} PDF</a>
       </p>
 
@@ -93,7 +94,7 @@
       </ul>
 
       <ion-button expand="block" fill="outline" (click)="chooseDocs()">{{'UPLOAD' | translate}} PDF</ion-button>
-      <div>
+      <div style="display: none">
         <form ngNoForm>
           <input id="docsPDF" name="file" type="file" (change)="uploadDocs()">
         </form>

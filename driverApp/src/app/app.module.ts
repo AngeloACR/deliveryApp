@@ -34,6 +34,7 @@ import { Geolocation } from "@ionic-native/geolocation/ngx";
 //follow location
 import { AngularFireAuthModule } from "angularfire2/auth";
 import { AngularFireDatabaseModule } from "angularfire2/database";
+import { ConfirmPasswordValidator } from "./directives/must-match.validator";
 
 import { AppComponent } from "./app.component";
 import { HomeComponent } from "./containers/home/home.component";
@@ -43,7 +44,7 @@ import { PerfilComponent } from "./containers/perfil/perfil.component";
 import { PedidosComponent } from "./containers/pedidos/pedidos.component";
 import { CarrerasComponent } from "./containers/carreras/carreras.component";
 
-import { SplashComponent } from "./components/splash/splash.component";
+import { SplashComponent } from "./containers/splash/splash.component";
 import { MapComponent } from "./components/map/map.component";
 import { CarrerasListComponent } from "./components/carreras-list/carreras-list.component";
 import { PedidosListComponent } from "./components/pedidos-list/pedidos-list.component";
@@ -52,6 +53,11 @@ import { PedidoInfoComponent } from "./components/pedido-info/pedido-info.compon
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AngularFireStorage } from "@angular/fire/storage";
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
+import {
+  AngularFireFunctionsModule,
+  FUNCTIONS_REGION
+} from "@angular/fire/functions";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyC1yKacAVVJAlen2jHu39M0XsYavtYFIEY",
@@ -81,6 +87,7 @@ export function customTranslateLoader(http: HttpClient) {
     PerfilComponent,
     PedidosComponent,
     CarrerasComponent,
+    ConfirmPasswordValidator,
     CarrerasListComponent,
     PedidosListComponent,
     CarreraInfoComponent,
@@ -104,6 +111,7 @@ export function customTranslateLoader(http: HttpClient) {
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFirestoreModule,
+    AngularFireFunctionsModule,
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {
@@ -119,14 +127,17 @@ export function customTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     Facebook,
+    FCM,
     Stripe,
     CallNumber,
     SocialSharing,
     PayPal,
+    HttpClient,
     InAppBrowser,
     Geolocation,
     //	OneSignal,
     //	NativeAudio,
+    { provide: FUNCTIONS_REGION, useValue: "us-central1" },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

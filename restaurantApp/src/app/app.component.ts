@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
+import { AngularFireDatabase } from "@angular/fire/database";
 
 import {
   Platform,
@@ -95,11 +97,13 @@ export class AppComponent implements OnInit {
   constructor(
     private themeProvider: ThemeProvider,
     private auth: AuthService,
+    private fcm: FCM,
     private res: RestaurantesService,
     public toastCtrl: ToastController,
     public menuCtrl: MenuController,
     public modalCtrl: ModalController,
     private storage: Storage,
+    private db: AngularFireDatabase,
     public usersProv: UsersProvider,
     private router: Router,
     private platform: Platform,
@@ -120,77 +124,52 @@ export class AppComponent implements OnInit {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      setTimeout(() => {
-        this.showSplash = false;
-      }, 4000);
+      this.storage.ready().then(() => {
+        this.statusBar.styleDefault();
+        this.splashScreen.hide();
+        this.router.navigateByUrl("splash");
+        setTimeout(async () => {
+          let isLogged = await this.auth.getStatus();
+          this.showSplash = false;
+           if (this.platform.is("ios")) {
+            this.fcm.hasPermission().then(hasPermission => {
+              if (hasPermission) {
+                this.pushSetup();
+              }
+            });
+          } else {
+            this.fcm.hasPermission().then(hasPermission => {
+              if (hasPermission) {
+                this.pushSetup();
+              }
+            });
+          } 
 
-      /*       setTimeout(async () => {
-        await this.oneSignal.startInit(
-          environment.onesignal.appId,
-          environment.onesignal.googleProjectNumber
-        );
-        this.oneSignal.getIds().then(data => {
-          localStorage.setItem("fcm", data.userId);
-        });
-        this.oneSignal.enableSound(true);
-        await this.oneSignal.endInit();
-      }, 1000);
-
-      this.oneSignal.handleNotificationReceived().subscribe(data => {
-        console.log("got order", data);
-
-        //this.presentActionSheet();
-      });
-      this.oneSignal.inFocusDisplaying(2);
- */
-
-      this.storage.ready().then(async () => {
-        let isLogged = await this.auth.getStatus();
-
-        if (isLogged != null) {
-          this.router.navigateByUrl("home");
-        } else {
-          this.router.navigateByUrl("login");
-        }
+          if (isLogged != null) {
+            this.router.navigateByUrl("home");
+          } else {
+            this.router.navigateByUrl("login");
+          }
+        }, 7000);
       });
     });
   }
 
-  ngOnInit() {
-    /*     this.fireAuth = firebase.auth();
-
-    console.log(this.fireAuth);
-
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.values.userRole = firebase
-          .database()
-          .ref("/users")
-          .child(user.uid)
-          .on("value", snapshot => {
-            if (snapshot.val()) {
-              this.userProfiles = snapshot.val();
-            }
-          });
+  pushSetup() {
+    this.fcm.onNotification().subscribe(data => {
+      if (data.wasTapped) {
+        console.log("Received in background");
+      } else {
+        console.log("Received in foreground");
       }
     });
 
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.values.isLoggedIn = true;
-        this.values.userRole = firebase
-          .database()
-          .ref("/Customer-Role")
-          .child(user.uid)
-          .on("value", snapshot => {
-            if (snapshot.val()) {
-              this.values.userRole = snapshot.val().role;
-            }
-          });
-      } 
-    });*/
-
+    this.fcm.onTokenRefresh().subscribe(token => {
+      // Register your new token in your back-end if you want
+      this.auth.setToken(token);
+    });
+  }
+  ngOnInit() {
     let userLang = "spanish";
     this.translate.use(userLang);
   }

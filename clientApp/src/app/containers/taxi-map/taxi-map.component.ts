@@ -20,6 +20,7 @@ import {
 import { take } from "rxjs/operators";
 import { CommonService } from "../../services/common.service";
 import * as firebase from "firebase";
+import { PushService } from "../../services/push.service";
 
 @Component({
   selector: "app-taxi-map",
@@ -91,10 +92,15 @@ export class TaxiMapComponent implements OnInit {
   driversList: any;
   driversMarker: any;
 
+  vehicleOptions: any = [];
+  taxis: any = [];
+  motos: any = [];
+  vehicleOptionSelected: boolean = false;
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
     private placesService: PlacesService,
+    private push: PushService,
     private settingService: SettingService,
     private driversService: DriversService,
     private afAuth: AngularFireAuth,
@@ -126,11 +132,13 @@ export class TaxiMapComponent implements OnInit {
   }
 
   async ionViewDidEnter() {
+    await this.common.showLoader();
     await this.map.loadMap();
     this.menuCtrl.enable(true);
+    this.common.hideLoader();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.listOpened = false;
     this.driverOpened = false;
     this.markerImg = "assets/img/marcador.png";
@@ -151,6 +159,17 @@ export class TaxiMapComponent implements OnInit {
     );
   }
 
+  stops: any = [];
+
+  formatStop(stop) {
+    let formatedStop = this.placesService.formatAddress(stop);
+    this.stops.push(formatedStop);
+    this.carrerasService.setStop(
+      formatedStop.vicinity,
+      formatedStop.lat,
+      formatedStop.lng
+    );
+  }
   formatDestination(destination) {
     this.destination = this.placesService.formatAddress(destination);
     this.carrerasService.setDestination(
@@ -166,6 +185,8 @@ export class TaxiMapComponent implements OnInit {
       .valueChanges()
       .subscribe((snapshot: any) => {
         this.vehicles = [];
+        this.motos = [];
+        this.taxis = [];
         console.log(snapshot);
         let obj = snapshot[this.locality]
           ? snapshot[this.locality]
@@ -177,9 +198,42 @@ export class TaxiMapComponent implements OnInit {
         // calculate price
         Object.keys(obj.vehicles).forEach(id => {
           obj.vehicles[id].id = id;
+          if (
+            obj.vehicles[id].type == "moto_taxi_lineal" ||
+            obj.vehicles[id].type == "moto_taxi_tuk_tuk"
+          ) {
+            this.motos.push(obj.vehicles[id]);
+          } else {
+            this.taxis.push(obj.vehicles[id]);
+          }
           this.vehicles.push(obj.vehicles[id]);
         });
+        console.log(this.motos);
+        console.log(this.taxis);
+        let taxiAux = {
+          icon: this.taxis[0].icon,
+          name: "Taxi"
+        };
+        let motoAux = {
+          icon: this.motos[0].icon,
+          name: "Moto"
+        };
+        this.vehicleOptions.push(taxiAux);
+        this.vehicleOptions.push(motoAux);
       });
+  }
+
+  chooseVehicleOption(i) {
+    if (i == 0) {
+      this.vehicles = this.taxis;
+    } else {
+      this.vehicles = this.motos;
+    }
+    this.vehicleOptionSelected = true;
+  }
+
+  backToChooseVechicleType() {
+    this.vehicleOptionSelected = false;
   }
 
   async changeRoute() {
@@ -198,7 +252,9 @@ export class TaxiMapComponent implements OnInit {
       this.vehicles[i].fee = this.vehicles[i].fee.toFixed(2);
     }
     this.lookForDriver = true;
+    this.vehicleOptionSelected = false;
   }
+
   // toggle active vehicle
   chooseVehicle(index) {
     for (var i = 0; i < this.vehicles.length; i++) {
@@ -319,7 +375,7 @@ export class TaxiMapComponent implements OnInit {
 
     if (driver) {
       driver.status = "Bidding";
-      this.carrerasService
+      /*       this.carrerasService
         .getDriverDeal(driver.key)
         .valueChanges()
         .pipe(take(1))
@@ -328,20 +384,21 @@ export class TaxiMapComponent implements OnInit {
           console.log(snapshot);
           if (snapshot == null) {
             // create a record
-            console.log(snapshot);
-            this.carrerasService
-              .makeTaxiDeal(
-                driver.key,
-                this.carrerasService.getOrigin(),
-                this.carrerasService.getDestination(),
-                this.carrerasService.getDistance(),
-                this.carrerasService.getFee(),
-                this.carrerasService.getCurrency(),
-                this.carrerasService.getNote(),
-                this.carrerasService.getPromo(),
-                this.carrerasService.getDiscount()
-              )
-              .then(() => {
+            console.log(snapshot); */
+      let carrera = this.carrerasService.makeTaxiDeal(
+        driver.key,
+        this.carrerasService.getOrigin(),
+        this.carrerasService.getStops(),
+        this.carrerasService.getDestination(),
+        this.carrerasService.getDistance(),
+        this.carrerasService.getFee(),
+        this.carrerasService.getCurrency(),
+        this.carrerasService.getNote(),
+        this.carrerasService.getPromo(),
+        this.carrerasService.getDiscount()
+      );
+
+      /*               .then(() => {
                 let sub = this.carrerasService
                   .getDriverDeal(driver.key)
                   .valueChanges()
@@ -366,16 +423,23 @@ export class TaxiMapComponent implements OnInit {
                     }
                   });
               });
-            if (this.driverOpened) {
-              this.closeDriver();
-            }
-            if (this.listOpened) {
-              this.closeDriver();
-            }
-          } /* else {
+ */ if (
+        this.driverOpened
+      ) {
+        this.closeDriver();
+      }
+      if (this.listOpened) {
+        this.closeDriver();
+      } /* else {
           this.nextDriver(index);
-        } */
-        });
+        } */ /* 
+        }); */ /* 
+          } */
+      this.push.pushCrearCarrera(carrera);
+      this.common.showToast(
+        "Carrera creada con exito, espere unos minutos por la respuesta del conductor"
+      );
+      this.router.navigateByUrl('/carreras')
     } else {
       // show error & try again button
       console.log("No user found");
@@ -442,7 +506,7 @@ export class TaxiMapComponent implements OnInit {
           let isRecent =
             Date.now() - vehicle.last_active < VEHICLE_LAST_ACTIVE_LIMIT;
 
-          if (isNear && isRecent) {
+          if (isRecent) {
             let marker = {
               img: this.currentVehicle.map_icon,
               lat: vehicle.lat,

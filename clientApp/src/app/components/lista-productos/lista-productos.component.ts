@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { CarritoService } from "../../services/carrito.service";
+import { CommonService } from "../../services/common.service";
 @Component({
   selector: "app-lista-productos",
   templateUrl: "./lista-productos.component.html",
@@ -15,7 +16,7 @@ export class ListaProductosComponent implements OnInit {
   qtys: any;
   productosLength: any;
 
-  constructor(private carrito: CarritoService) {}
+  constructor(private common: CommonService, private carrito: CarritoService) {}
 
   ngOnInit() {
     this.qtys = [];

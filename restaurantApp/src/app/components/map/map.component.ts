@@ -381,7 +381,7 @@ export class MapComponent implements OnInit {
           url: this.markerImg,
           size: new google.maps.Size(50, 50),
           origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(25, 25),
+          anchor: new google.maps.Point(25, 50),
           scaledSize: new google.maps.Size(50, 50)
         }
       });
@@ -407,7 +407,7 @@ export class MapComponent implements OnInit {
             url: marker.img,
             size: new google.maps.Size(50, 50),
             origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(25, 25),
+            anchor: new google.maps.Point(25, 50),
             scaledSize: new google.maps.Size(50, 50)
           }
         });
@@ -441,7 +441,7 @@ export class MapComponent implements OnInit {
         url: markerImg,
         size: new google.maps.Size(50, 50),
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(25, 25),
+        anchor: new google.maps.Point(25, 50),
         scaledSize: new google.maps.Size(50, 50)
       }
     });
@@ -460,7 +460,7 @@ export class MapComponent implements OnInit {
         url: markerImg,
         size: new google.maps.Size(50, 50),
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(25, 25),
+        anchor: new google.maps.Point(25, 50),
         scaledSize: new google.maps.Size(50, 50)
       }
     });

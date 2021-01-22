@@ -40,9 +40,10 @@ import { Geolocation } from "@ionic-native/geolocation/ngx";
 //follow location
 import { AngularFireAuthModule } from "angularfire2/auth";
 import { AngularFireDatabaseModule } from "angularfire2/database";
+import { ConfirmPasswordValidator } from "./directives/must-match.validator";
 
 import { AppComponent } from "./app.component";
-import { SplashComponent } from "./components/splash/splash.component";
+import { SplashComponent } from "./containers/splash/splash.component";
 import { MapComponent } from "./components/map/map.component";
 import { HomeComponent } from "./containers/home/home.component";
 import { LoginComponent } from "./containers/login/login.component";
@@ -71,6 +72,11 @@ import { PedidosListComponent } from "./components/pedidos-list/pedidos-list.com
 import { FindDriverComponent } from "./components/find-driver/find-driver.component";
 
 import { AppRoutingModule } from "./app-routing.module";
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
+import {
+  AngularFireFunctionsModule,
+  FUNCTIONS_REGION
+} from "@angular/fire/functions";
 
 export const firebaseConfig = {
   apiKey: "AIzaSyC1yKacAVVJAlen2jHu39M0XsYavtYFIEY",
@@ -105,6 +111,7 @@ export function customTranslateLoader(http: HttpClient) {
     TrackDriversComponent,
     RestaurantesComponent,
     PedidosComponent,
+    ConfirmPasswordValidator,
     FormRestaurantComponent,
     FormCategoriaComponent,
     FormProductoComponent,
@@ -143,6 +150,7 @@ export function customTranslateLoader(http: HttpClient) {
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFirestoreModule,
+    AngularFireFunctionsModule,
     CommonModule,
     HttpClientModule,
     TranslateModule.forRoot({
@@ -161,8 +169,10 @@ export function customTranslateLoader(http: HttpClient) {
     ThemeProvider,
     ServiceProvider,
     Values,
+    FCM,
     Facebook,
     Stripe,
+    HttpClient,
     CallNumber,
     AngularFireStorage,
     SocialSharing,
@@ -171,6 +181,7 @@ export function customTranslateLoader(http: HttpClient) {
     Geolocation,
     //	OneSignal,
     //	NativeAudio,
+    { provide: FUNCTIONS_REGION, useValue: "us-central1" },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

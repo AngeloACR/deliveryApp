@@ -30,7 +30,7 @@ export const environment = {
 
 export let SHOW_VEHICLES_WITHIN = 20; // within 5km
 export let POSITION_INTERVAL = 5000; // 5000ms
-export let VEHICLE_LAST_ACTIVE_LIMIT = 1000 * 60 * 10; // 15 mins
+export let VEHICLE_LAST_ACTIVE_LIMIT = 1000 * 60 * 30; // 15 mins
 
 export let DRIVER_INIT_BALANCE = 10; // balance when user signed up for first time
 export let DRIVER_INIT_RATING = 5; // rating when user signedup for first time

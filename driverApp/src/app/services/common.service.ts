@@ -5,6 +5,7 @@ import {
   LoadingController,
   Platform
 } from "@ionic/angular";
+import { Router } from "@angular/router";
 
 declare var cordova;
 
@@ -18,6 +19,7 @@ export class CommonService {
     private toast: ToastController,
     private alertCtrl: AlertController,
     private loadCtrl: LoadingController,
+    private router: Router,
     private platform: Platform
   ) {}
 
@@ -36,17 +38,41 @@ export class CommonService {
       .then(res => res.present());
   }
 
-  showLoader(message) {
-    this.loadCtrl.create({ message: message }).then(res => {
-      this.loader = res.present();
-      setTimeout(() => this.loadCtrl.dismiss(), 10000);
-    });
+  showFirstTime(message, textButton, handler) {
+    this.alertCtrl
+      .create({
+        message: message,
+        buttons: [
+          {
+            text: textButton,
+            handler: () => {
+              handler;
+            }
+          }
+        ]
+      })
+      .then(res => res.present());
+  }
+
+  async showLoader() {
+    try {
+      console.log("here");
+      this.loader = await this.loadCtrl.create({
+        message:
+          '<ion-img src="/assets/img/splash.gif" alt="loading..."></ion-img>',
+        translucent: true,
+        showBackdrop: false,
+        spinner: null
+      });
+      return await this.loader.present();
+    } catch (error) {
+      console.log(error.toString());
+    }
   }
 
   hideLoader() {
-    this.loadCtrl.dismiss();
+    this.loader.dismiss();
   }
-
   enableBgMode() {
     if (this.platform.is("android") || this.platform.is("ios")) {
       const options = {

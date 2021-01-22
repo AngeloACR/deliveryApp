@@ -6,12 +6,17 @@ import { RegistroComponent } from "./containers/registro/registro.component";
 import { CarrerasComponent } from "./containers/carreras/carreras.component";
 import { PedidosComponent } from "./containers/pedidos/pedidos.component";
 import { PerfilComponent } from "./containers/perfil/perfil.component";
+import { SplashComponent } from "./containers/splash/splash.component";
 
 const routes: Routes = [
   {
     path: "",
     redirectTo: "login",
     pathMatch: "full"
+  },
+  {
+    path: "splash",
+    component: SplashComponent
   },
   {
     path: "login",

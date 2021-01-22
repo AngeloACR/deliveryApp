@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { PedidosService } from "../../services/pedidos.service";
+import { CommonService } from "../../services/common.service";
 
 @Component({
   selector: "app-pedidos-list",
@@ -18,7 +19,10 @@ export class PedidosListComponent implements OnInit {
 
   pedidosLength: any;
 
-  constructor(private pedidosService: PedidosService) {}
+  constructor(
+    private common: CommonService,
+    private pedidosService: PedidosService
+  ) {}
 
   ngOnInit() {
     console.log("Opening pedidos list");

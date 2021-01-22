@@ -6,6 +6,7 @@ import {
   EventEmitter,
   ViewChild
 } from "@angular/core";
+import { CommonService } from "../../services/common.service";
 import { CarritoService } from "../../services/carrito.service";
 @Component({
   selector: "app-carrito",
@@ -23,7 +24,10 @@ export class CarritoComponent implements OnInit {
 
   montoTotal: any;
 
-  constructor(private carritoService: CarritoService) {}
+  constructor(
+    private common: CommonService,
+    private carritoService: CarritoService
+  ) {}
 
   ngOnInit() {
     this.qtys = [];

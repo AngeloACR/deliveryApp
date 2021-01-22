@@ -3,8 +3,10 @@
     <div class="infoBox">
       <p>Origen: <br>{{pedido.origin.vicinity}}</p><br>
       <p>Destino: <br>{{pedido.destination.vicinity}}</p><br>
-      <p>Monto: {{pedido.fee}}</p><br>
-      <p>Status: <br>{{pedido.status}}</p>
+      <p>Distancia del pedido: {{pedido.distance}}</p><br>
+      <p>Monto: S/ {{pedido.fee}}</p><br>
+      <p>Status de la carrera: {{pedido.driverStatus}}</p><br>
+      <p>Status del pago: {{pedido.paymentStatus}}</p>
     </div>
     <div class="moreBox" *ngIf="isAceptar">
       <button type="button" (click)="aceptarPedido($event, pedido)">

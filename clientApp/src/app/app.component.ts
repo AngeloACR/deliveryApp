@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
+import { AngularFireDatabase } from "@angular/fire/database";
 
 import {
   Platform,
@@ -92,6 +94,8 @@ export class AppComponent implements OnInit {
     public menuCtrl: MenuController,
     public modalCtrl: ModalController,
     private storage: Storage,
+    private fcm: FCM,
+    private db: AngularFireDatabase,
     private router: Router,
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -107,25 +111,53 @@ export class AppComponent implements OnInit {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      setTimeout(() => {
-        this.showSplash = false;
-      }, 4000);
+      this.storage.ready().then(() => {
+        this.statusBar.styleDefault();
+        this.splashScreen.hide();
+        this.router.navigateByUrl("splash");
+        setTimeout(async () => {
+          let isLogged = await this.auth.getStatus();
+          this.showSplash = false;
+            if (this.platform.is("ios")) {
+            this.fcm.hasPermission().then(hasPermission => {
+              if (hasPermission) {
+                this.pushSetup();
+              }
+            });
+          } else {
+            this.fcm.hasPermission().then(hasPermission => {
+              if (hasPermission) {
+                this.pushSetup();
+              }
+            });
+          } 
 
-      this.storage.ready().then(async () => {
-        let isLogged = await this.auth.getStatus();
-
-        if (isLogged != null) {
-          this.router.navigateByUrl("home");
-        } else {
-          this.router.navigateByUrl("login");
-        }
+          if (isLogged != null) {
+            this.router.navigateByUrl("home");
+          } else {
+            this.router.navigateByUrl("login");
+          }
+        }, 7000);
       });
     });
   }
 
-  ngOnInit() {
+  pushSetup() {
+    this.fcm.onNotification().subscribe(data => {
+      if (data.wasTapped) {
+        console.log("Received in background");
+      } else {
+        console.log("Received in foreground");
+      }
+    });
 
+    this.fcm.onTokenRefresh().subscribe(token => {
+      // Register your new token in your back-end if you want
+      this.auth.setToken(token);
+    });
+  }
+
+  ngOnInit() {
     let userLang = "spanish";
     this.translate.use(userLang);
   }

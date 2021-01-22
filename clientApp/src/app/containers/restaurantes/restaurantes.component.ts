@@ -8,6 +8,7 @@ import { ProductosService } from "../../services/productos.service";
 //import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { ListaRestaurantComponent } from "../../components/lista-restaurant/lista-restaurant.component";
 import { CarritoService } from "../../services/carrito.service";
+import { CommonService } from "../../services/common.service";
 
 import { CallNumber } from "@ionic-native/call-number/ngx";
 
@@ -64,6 +65,7 @@ export class RestaurantesComponent implements OnInit {
     private callNumber: CallNumber,
     public router: Router,
     public zone: NgZone,
+    private common: CommonService,
     private cat: CategoriasService,
     private carritoService: CarritoService,
     private prod: ProductosService,

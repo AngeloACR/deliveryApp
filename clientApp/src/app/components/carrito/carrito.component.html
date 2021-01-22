@@ -1,6 +1,6 @@
 <div class="bigBox" *ngIf="productosLength">
   <div class="cardBox" *ngFor="let item of productos; let i=index">
-    <p class="productSubtotal">{{item.subtotal}}</p>
+    <p class="productSubtotal">S/ {{item.subtotal}}</p>
     <div class="imgBox">
       <img class="imgResultados" [src]="item.image" alt="" />
     </div>
@@ -19,7 +19,7 @@
   </div>
   <div class="totalBox">
     <p>
-      Monto total: {{montoTotal}}
+      Monto total: S/ {{montoTotal}}
     </p>
   </div>
 </div>

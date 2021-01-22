@@ -12,12 +12,17 @@ import { TodayOrderComponent } from "./containers/today-order/today-order.compon
 import { TrackDriversComponent } from "./containers/track-drivers/track-drivers.component";
 import { RestaurantesComponent } from "./containers/restaurantes/restaurantes.component";
 import { PedidosComponent } from "./containers/pedidos/pedidos.component";
+import { SplashComponent } from "./containers/splash/splash.component";
 
 const routes: Routes = [
   {
     path: "",
     redirectTo: "login",
     pathMatch: "full"
+  },
+  {
+    path: "splash",
+    component: SplashComponent
   },
   {
     path: "login",

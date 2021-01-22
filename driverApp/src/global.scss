@@ -29,6 +29,10 @@ ion-button {
   --box-shadow: none;
 }
 
+input, ion-input{
+  color: black !important;
+}
+
 ion-input,
 ion-textarea,
 ion-select {

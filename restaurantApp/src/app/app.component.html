@@ -1,7 +1,6 @@
-<app-splash class="splash" *ngIf="showSplash"></app-splash>
-<ion-app *ngIf="!showSplash">
+<ion-app>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+    <ion-menu *ngIf="!showSplash" contentId="main-content" type="overlay">
       <ion-header>
         <ion-toolbar class="menuToolbar">
 

@@ -11,6 +11,7 @@ import { TranslateService } from "@ngx-translate/core";
 import { AuthService } from "../../services/auth.service";
 import { Router } from "@angular/router";
 import { CheckoutService } from "../../services/checkout.service";
+import { CommonService } from "../../services/common.service";
 
 @Component({
   selector: "app-checkout",
@@ -27,6 +28,7 @@ export class CheckoutComponent implements OnInit {
   constructor(
     private translate: TranslateService,
     private auth: AuthService,
+    private common: CommonService,
     private router: Router,
     private checkout: CheckoutService
   ) {

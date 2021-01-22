@@ -3,8 +3,10 @@
     <div class="infoBox">
       <p>Origen: <br>{{carrera.origin.vicinity}}</p><br>
       <p>Destino: <br>{{carrera.destination.vicinity}}</p><br>
-      <p>Monto: {{carrera.fee}}</p><br>
-      <p>Status: <br>{{carrera.status}}</p>
+      <p>Distancia de la carrera: {{carrera.distance}}</p><br>
+      <p>Monto: S/ {{carrera.fee}}</p><br>
+      <p>Status de la carrera: {{carrera.status}}</p><br>
+      <p>Status del pago: {{carrera.paymentStatus}}</p>
     </div>
     <div class="moreBox" *ngIf="isPago">
       <button type="button" (click)="pagar($event, carrera)">

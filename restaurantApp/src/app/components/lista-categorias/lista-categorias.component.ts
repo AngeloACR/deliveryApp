@@ -44,4 +44,8 @@ export class ListaCategoriasComponent implements OnInit {
   productos(event, categoria) {
     this.verProductos.emit(categoria.key);
   }
+
+  volverRestaurantes() {
+    this.volver.emit();
+  }
 }

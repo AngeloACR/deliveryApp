@@ -8,6 +8,7 @@ import {
 } from "@angular/core";
 import { TranslateService } from "@ngx-translate/core";
 import { Geolocation } from "@ionic-native/geolocation/ngx";
+import { CommonService } from "../../services/common.service";
 
 declare var google: any;
 @Component({
@@ -30,18 +31,21 @@ export class MapComponent implements OnInit {
 
   @Output() setRoute = new EventEmitter<any>();
   @Output() setOrigin = new EventEmitter<any>();
+  @Output() setStop = new EventEmitter<any>();
   @Output() setDestination = new EventEmitter<any>();
   @Output() setLocality = new EventEmitter<any>();
   @Output() changeRoute = new EventEmitter<any>();
   @Output() markerClicked = new EventEmitter<any>();
+
+  points: any = [];
 
   formatedOrigin: any;
   formatedDestination: any;
 
   locationText: string;
 
-  directionsDisplay: any;
-  directionsService: any;
+  directionsDisplay: any = [];
+  directionsService: any = [];
 
   routeSelected: boolean = false;
 
@@ -72,6 +76,7 @@ export class MapComponent implements OnInit {
   destinationAddress: any;
   constructor(
     private geolocation: Geolocation,
+    private common: CommonService,
     private translate: TranslateService,
     private ngZone: NgZone
   ) {
@@ -255,13 +260,15 @@ export class MapComponent implements OnInit {
       this.origin = this.map.getCenter();
       this.setOriginMarker();
     });
+    this.disableMarkersSelection();
+
     this.originSelection = true;
-    this.destinationSelection = false;
     this.originSelected = false;
     this.originInput = false;
+    /*     this.destinationSelection = false;
     this.destinationInput = true;
-    this.originFocus = true;
     this.destinationFocus = false;
+ */ this.originFocus = true;
   }
 
   chooseDestination() {
@@ -274,13 +281,15 @@ export class MapComponent implements OnInit {
       this.destination = this.map.getCenter();
       this.setDestinationMarker();
     });
+    this.disableMarkersSelection();
     this.destinationSelection = true;
-    this.originSelection = false;
     this.destinationSelected = false;
     this.destinationInput = false;
-    this.originInput = true;
     this.destinationFocus = true;
+    /*     this.originInput = true;
+    this.originSelection = false;
     this.originFocus = false;
+ */
   }
 
   disableListeners() {
@@ -290,7 +299,6 @@ export class MapComponent implements OnInit {
   traceRoute() {
     let mapx = this.map;
     this.routeSelected = true;
-    this.directionsDisplay;
     this.directionsService = new google.maps.DirectionsService();
     this.directionsDisplay = new google.maps.DirectionsRenderer({
       suppressMarkers: true
@@ -299,10 +307,20 @@ export class MapComponent implements OnInit {
     var bounds = new google.maps.LatLngBounds();
     bounds.extend(this.origin);
     bounds.extend(this.destination);
-
+    let waypoints = [];
+    for (var i = 0; i < this.points.length; i++) {
+      var address = this.points[i].position;
+      if (address !== "") {
+        waypoints.push({
+          location: address,
+          stopover: true
+        });
+      }
+    }
     mapx.fitBounds(bounds);
     var request = {
       origin: this.origin,
+      waypoints: waypoints,
       destination: this.destination,
       travelMode: google.maps.TravelMode.DRIVING
     };
@@ -314,21 +332,40 @@ export class MapComponent implements OnInit {
             console.log(response);
             this.directionsDisplay.setDirections(response);
             this.directionsDisplay.setMap(mapx);
-
-            var leg = response.routes[0].legs[0];
+            console.log(response.routes);
+            console.log(response.routes[0].legs);
+            console.log(response.routes[0].legs[0]);
+            var legs = response.routes[0].legs;
+            let legsLength = legs.length;
             this.originMarker.setMap(null);
-            this.origin = leg.start_location;
+            this.origin = legs[0].start_location;
             this.setOriginMarker();
-            this.destinationMarker.setMap(null);
-            this.destination = leg.end_location;
-            this.setDestinationMarker();
+            let totalDistance = 0;
+            let totalDuration = 0;
+            for (let i = 0; i < legsLength; i++) {
+              if (i == legsLength - 1) {
+                this.destinationMarker.setMap(null);
+                this.destination = legs[i].end_location;
+                this.setDestinationMarker();
+              } else {
+                this.setStopMarker(i);
+              }
+              totalDistance += legs[i].distance.value;
+              totalDuration += legs[i].duration.value;
+            }
+
+            let totalDistanceAux = totalDistance / 1000;
+            let totalDurationAux = totalDuration / 60;
+            let totalDistanceText = `${totalDistanceAux.toFixed(2)} Km`;
+            let totalDurationText = `${totalDurationAux.toFixed(0)} min`;
+
             this.disableListeners();
 
             if (response.routes.length != 0) {
               console.log();
-              let distance = response.routes[0].legs[0].distance.value;
-              let distanceText = response.routes[0].legs[0].distance.text;
-              let durationText = response.routes[0].legs[0].duration.text;
+              let distance = totalDistance;
+              let distanceText = totalDistanceText;
+              let durationText = totalDurationText;
 
               let tripData = {
                 distance: distance,
@@ -362,7 +399,7 @@ export class MapComponent implements OnInit {
           url: this.markerImg,
           size: new google.maps.Size(50, 50),
           origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(25, 25),
+          anchor: new google.maps.Point(25, 50),
           scaledSize: new google.maps.Size(50, 50)
         }
       });
@@ -388,7 +425,7 @@ export class MapComponent implements OnInit {
             url: marker.img,
             size: new google.maps.Size(50, 50),
             origin: new google.maps.Point(0, 0),
-            anchor: new google.maps.Point(25, 25),
+            anchor: new google.maps.Point(25, 50),
             scaledSize: new google.maps.Size(50, 50)
           }
         });
@@ -402,12 +439,47 @@ export class MapComponent implements OnInit {
     }
   }
 
-  removeMarkers(){
-    if(this.googleMarkers && this.googleMarkers.length){
+  removeMarkers() {
+    if (this.googleMarkers && this.googleMarkers.length) {
       this.googleMarkers.forEach(marker => {
         marker.setMap(null);
       });
     }
+  }
+
+  deleteStop(event, index) {
+    if (this.points[index].marker) {
+      this.points[index].marker.setMap(null);
+    }
+    this.points.splice(index, 1);
+  }
+
+  stopMarkers: any = [];
+  setStopMarker(index) {
+    if (this.points[index].marker) {
+      this.points[index].marker.setMap(null);
+    }
+    let position;
+    if (this.points[index].position) {
+      position = this.points[index].position;
+    } else {
+      position = this.map.getCenter();
+    }
+    let markerImg = "assets/img/marcador.png";
+    let marker = new google.maps.Marker({
+      animation: google.maps.Animation.DROP,
+      position: position,
+      icon: {
+        url: markerImg,
+        size: new google.maps.Size(50, 50),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(25, 50),
+        scaledSize: new google.maps.Size(50, 50)
+      }
+    });
+    this.points[index].marker = marker;
+
+    this.points[index].marker.setMap(this.map);
   }
 
   setOriginMarker() {
@@ -422,7 +494,7 @@ export class MapComponent implements OnInit {
         url: markerImg,
         size: new google.maps.Size(50, 50),
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(25, 25),
+        anchor: new google.maps.Point(25, 50),
         scaledSize: new google.maps.Size(50, 50)
       }
     });
@@ -441,7 +513,7 @@ export class MapComponent implements OnInit {
         url: markerImg,
         size: new google.maps.Size(50, 50),
         origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(25, 25),
+        anchor: new google.maps.Point(25, 50),
         scaledSize: new google.maps.Size(50, 50)
       }
     });
@@ -460,5 +532,68 @@ export class MapComponent implements OnInit {
     this.originSelection = false;
     this.destinationSelection = false;
     this.changeRoute.emit();
+  }
+
+  addStop() {
+    let markerImg = "assets/img/marcador.png";
+    let point = {
+      selected: false,
+      selection: false,
+      input: true,
+      position: "",
+      address: "",
+      marker: ""
+    };
+    this.points.push(point);
+  }
+  disableMarkersSelection() {
+    this.originInput = true;
+    this.originSelection = false;
+    this.destinationInput = true;
+    this.destinationSelection = false;
+
+    for (let index = 0; index < this.points.length; index++) {
+      this.points[index].selection = false;
+      this.points[index].input = true;
+    }
+  }
+  chooseStop(event, index) {
+    this.setStopMarker(index);
+    this.disableListeners();
+    this.centerListener = this.map.addListener("center_changed", event => {
+      let position = this.map.getCenter();
+      this.points[index].position = position;
+      this.setStopMarker(index);
+    });
+    this.disableMarkersSelection();
+
+    this.points[index].selection = true;
+    this.points[index].selected = false;
+    this.points[index].input = false;
+  }
+  async selectStopPoint(event, index) {
+    this.disableListeners();
+    let lat = await this.points[index].position.lat();
+    let lng = await this.points[index].position.lng();
+    let location = {
+      lat: lat,
+      lng: lng
+    };
+    let position = new google.maps.LatLng(lat, lng);
+    this.geocoder.geocode({ latLng: position }, (results, status) => {
+      this.ngZone.run(() => {
+        if (status === "OK") {
+          let data = results[0];
+          if (data) {
+            this.points[index].address = data.formatted_address;
+            this.setStop.emit(data);
+            this.setLocality.emit(results);
+            this.points[index].selection = false;
+            this.points[index].selected = true;
+            this.points[index].input = false;
+          }
+        }
+      });
+    });
   }
 }

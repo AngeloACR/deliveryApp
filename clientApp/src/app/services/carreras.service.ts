@@ -68,6 +68,7 @@ export class CarrerasService {
   makeTaxiDeal(
     driverId,
     origin,
+    stops,
     destination,
     distance,
     fee,
@@ -83,6 +84,7 @@ export class CarrerasService {
       currency: currency,
       type: "Taxi",
       origin: origin,
+      stops: stops,
       destination: destination,
       distance: distance,
       fee: fee,
@@ -93,7 +95,8 @@ export class CarrerasService {
       promocode: promocode,
       discount: discount
     };
-    return this.db.list("deals/taxi").push(carreraInfo);
+    this.db.list("deals/taxi").push(carreraInfo);
+    return carreraInfo;
   }
 
   pagarCarrera(info) {
@@ -137,8 +140,21 @@ export class CarrerasService {
     return (this.origin = place.getFormatted());
   }
 
+  stops: any = [];
+
+  setStop(vicinity, lat, lng) {
+    let place = new Place(vicinity, lat, lng);
+    let stop = place.getFormatted();
+    this.stops.push(stop);
+    return this.stops;
+  }
+
   getOrigin() {
     return this.origin;
+  }
+
+  getStops() {
+    return this.stops;
   }
 
   setDestination(vicinity, lat, lng) {

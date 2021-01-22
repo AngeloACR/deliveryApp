@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { DriversService } from "../../services/drivers.service";
 import { take } from "rxjs/operators";
+import { CommonService } from "../../services/common.service";
 
 @Component({
   selector: "app-driver-info",
@@ -19,7 +20,10 @@ export class DriverInfoComponent implements OnInit {
   @Output()
   deal = new EventEmitter<any>();
 
-  constructor(private driverService: DriversService) {}
+  constructor(
+    private common: CommonService,
+    private driverService: DriversService
+  ) {}
 
   ngOnInit() {
     console.log("Getting info");

@@ -86,7 +86,8 @@ export class PedidosService {
       driverStatus: DEAL_STATUS_PENDING,
       createdAt: Date.now()
     };
-    return this.db.list("deals/eats").push(pedidoInfo);
+    this.db.list("deals/eats").push(pedidoInfo);
+    return pedidoInfo;
   }
 
   pagarPedido(info) {

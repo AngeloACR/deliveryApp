@@ -8,14 +8,15 @@
 </ion-header>
 <ion-content>
   <div class="typesBox">
-    <button class="typeButton" [ngClass]="pendingButton" (click)="togglePedidos($event, 'pending')">Pedidos
+    <button class="typeButton" [ngClass]="pendingButton" (click)="actualizarPedidos($event, 'pending')">Pedidos
       pendientes</button>
-    <button class="typeButton" [ngClass]="acceptedButton" (click)="togglePedidos($event, 'accepted')">Pedidos
+    <button class="typeButton" [ngClass]="acceptedButton" (click)="actualizarPedidos($event, 'accepted')">Pedidos
       aceptados</button>
-    <button class="typeButton" [ngClass]="rejectedButton" (click)="togglePedidos($event, 'rejected')">Pedidos
+    <button class="typeButton" [ngClass]="rejectedButton" (click)="actualizarPedidos($event, 'rejected')">Pedidos
       rechazados</button>
 
   </div>
-  <app-pedidos-list (actualizar)="actualizarPedidos()" *ngIf="showPedidos" [isAceptar]="isAceptar" [pedidos]="pedidos">
+  <app-pedidos-list (actualizar)="actualizarPedidos($event, 'pending')" *ngIf="showPedidos"
+    [isAceptar]="isAceptar" [pedidos]="pedidos">
   </app-pedidos-list>
 </ion-content>

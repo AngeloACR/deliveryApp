@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { CommonService } from "../../services/common.service";
 
 @Component({
   selector: "app-lista-categorias",
@@ -23,7 +24,7 @@ export class ListaCategoriasComponent implements OnInit {
 
   categoriasLength: any;
 
-  constructor() {}
+  constructor(private common: CommonService) {}
 
   ngOnInit() {
     console.log("Opening restaurants list");
@@ -43,5 +44,9 @@ export class ListaCategoriasComponent implements OnInit {
 
   productos(event, categoria) {
     this.verProductos.emit(categoria.key);
+  }
+
+  volverRestaurantes() {
+    this.volver.emit();
   }
 }

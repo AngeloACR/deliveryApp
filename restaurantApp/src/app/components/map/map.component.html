@@ -1,5 +1,6 @@
 <div class="mapBoxInner">
-
+  
+  <div [id]="mapId" style="height: 100%;width:100%;"></div>
   <div class="inputsBox" *ngIf="!routeSelected">
     <div class="mapItem" *ngIf="isOrigin">
       <button *ngIf="originInput && !originSelected" (click)="chooseOrigin()">Escoger origen</button>
@@ -28,10 +29,9 @@
       <button (click)="traceRoute()">Trazar ruta</button>
     </div>
   </div>
-  <div class="inputsBox" *ngIf="routeSelected">
+  <div class="inputsBox" *ngIf="routeSelected && false">
     <div class="routeButton">
       <button (click)="selectPoints()">Trazar otra ruta</button>
     </div>
   </div>
-  <div [id]="mapId" style="height: 100%;width:100%;"></div>
 </div>

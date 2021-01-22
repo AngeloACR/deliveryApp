@@ -52,6 +52,7 @@ export class PerfilComponent implements OnInit {
     // this.user = this.authService.getUser(this.authService.getUserData().uid);
     let uid = await this.authService.getUId();
     this.user = await this.authService.getAuthData();
+    console.log(this.user);
     /*       .getUser(uid)
       .valueChanges()
       .pipe(take(1))
@@ -70,26 +71,24 @@ export class PerfilComponent implements OnInit {
             .getDefaultVehicleType()
             .pipe(take(1))
             .subscribe((snapshot: any) => {
-              console.log(snapshot);
               this.types = Object.keys(snapshot).map(function(key) {
                 return snapshot[key];
               });
+              console.log(this.types);
             });
         } else {
           this.types = Object.keys(snapshot).map(function(key) {
             return snapshot[key];
           });
+          console.log(this.types);
         }
       });
-    console.log(this.user);
   }
 
   async save() {
-    let uid = await this.authService.getUId();
-    let data = await this.authService.getUser(uid).update(this.user);
-
-    await this.authService.storeAuthData(data);
-    this.common.showToast("Updated successfully");
+    console.log(this.user);
+    await this.authService.updateUser(this.user);
+    this.common.showToast("Actualizado correctamente");
 
     /*       .then(async data => {
         console.log(data);
@@ -102,14 +101,14 @@ export class PerfilComponent implements OnInit {
     document.getElementById("avatar").click();
   }
 
-  upload() {
+  async upload() {
     // Create a root reference
-    this.common.showLoader("Uploading..");
+    await this.common.showLoader();
 
     for (let selectedFile of [
       (<HTMLInputElement>document.getElementById("avatar")).files[0]
     ]) {
-      let path = "/users/" + Date.now() + `_${selectedFile.name}`;
+      let path = `/drivers/${this.user.email}/${selectedFile.name}`;
       let ref = this.afStorage.ref(path);
       ref
         .put(selectedFile)
@@ -153,8 +152,8 @@ export class PerfilComponent implements OnInit {
   chooseDocs() {
     document.getElementById("docsPDF").click();
   }
-  uploadDocs() {
-    this.common.showLoader("Uploading..");
+  async uploadDocs() {
+    await this.common.showLoader();
 
     for (let selectedFile of [
       (<HTMLInputElement>document.getElementById("docsPDF")).files[0]
@@ -167,9 +166,11 @@ export class PerfilComponent implements OnInit {
         .then(() => {
           ref.getDownloadURL().subscribe(url => (this.user.docsURL = url));
           this.common.hideLoader();
+          this.common.showToast("Archivo cargado exitosamente");
         })
         .catch(err => {
           this.common.hideLoader();
+          this.common.showAlert("Error cargando el archivo");
           console.log(err);
         });
     }

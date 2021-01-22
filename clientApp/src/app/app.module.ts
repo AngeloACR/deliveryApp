@@ -36,6 +36,7 @@ import { AngularFireAuthModule } from "angularfire2/auth";
 import { AngularFireDatabaseModule } from "angularfire2/database";
 
 import { AppComponent } from "./app.component";
+import { ConfirmPasswordValidator } from "./directives/must-match.validator";
 
 import { HomeComponent } from "./containers/home/home.component";
 import { CarrerasComponent } from "./containers/carreras/carreras.component";
@@ -52,6 +53,7 @@ import { TaxiMapComponent } from "./containers/taxi-map/taxi-map.component";
 import { CheckoutEatsComponent } from "./containers/checkout-eats/checkout-eats.component";
 import { CheckoutTaxiComponent } from "./containers/checkout-taxi/checkout-taxi.component";
 import { ReviewPedidoComponent } from "./containers/review-pedido/review-pedido.component";
+import { SplashComponent } from "./containers/splash/splash.component";
 
 import { MapComponent } from "./components/map/map.component";
 import { CarritoComponent } from "./components/carrito/carrito.component";
@@ -62,7 +64,6 @@ import { PaymentGatewayComponent } from "./components/payment-gateway/payment-ga
 import { MenuEatsComponent } from "./components/menu-eats/menu-eats.component";
 import { DriverInfoComponent } from "./components/driver-info/driver-info.component";
 import { DriverListComponent } from "./components/drivers-list/drivers-list.component";
-import { SplashComponent } from "./components/splash/splash.component";
 import { ListaRestaurantComponent } from "./components/lista-restaurant/lista-restaurant.component";
 import { ListaCategoriasComponent } from "./components/lista-categorias/lista-categorias.component";
 import { ListaProductosComponent } from "./components/lista-productos/lista-productos.component";
@@ -72,6 +73,11 @@ import { AngularFireStorage } from "@angular/fire/storage";
 import { CheckoutService } from "./services/checkout.service";
 
 import { AppRoutingModule } from "./app-routing.module";
+import { FCM } from "cordova-plugin-fcm-with-dependecy-updated/ionic/ngx";
+import {
+  AngularFireFunctionsModule,
+  FUNCTIONS_REGION,
+} from '@angular/fire/functions';
 
 export const firebaseConfig = {
   apiKey: "AIzaSyC1yKacAVVJAlen2jHu39M0XsYavtYFIEY",
@@ -95,6 +101,7 @@ export function customTranslateLoader(http: HttpClient) {
     AppComponent,
     SplashComponent,
     HomeComponent,
+    ConfirmPasswordValidator,
     LoginComponent,
     RegistroComponent,
     MenuEatsComponent,
@@ -151,7 +158,8 @@ export function customTranslateLoader(http: HttpClient) {
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFirestoreModule,
-    HttpClientModule,
+    AngularFireFunctionsModule,
+  HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -165,6 +173,7 @@ export function customTranslateLoader(http: HttpClient) {
     StatusBar,
     SplashScreen,
     Facebook,
+    FCM,
     Stripe,
     AngularFireStorage,
     CallNumber,
@@ -175,7 +184,8 @@ export function customTranslateLoader(http: HttpClient) {
     Geolocation,
     //	OneSignal,
     //	NativeAudio,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: FUNCTIONS_REGION, useValue: 'us-central1' },
+  { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
 })

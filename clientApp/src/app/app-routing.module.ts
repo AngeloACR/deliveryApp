@@ -13,12 +13,17 @@ import { CarrerasComponent } from "./containers/carreras/carreras.component";
 import { PedidosComponent } from "./containers/pedidos/pedidos.component";
 import { CheckoutEatsComponent } from "./containers/checkout-eats/checkout-eats.component";
 import { CheckoutTaxiComponent } from "./containers/checkout-taxi/checkout-taxi.component";
+import { SplashComponent } from "./containers/splash/splash.component";
 
 const routes: Routes = [
   {
     path: "",
     redirectTo: "login",
     pathMatch: "full"
+  },
+  {
+    path: "splash",
+    component: SplashComponent
   },
   {
     path: "login",

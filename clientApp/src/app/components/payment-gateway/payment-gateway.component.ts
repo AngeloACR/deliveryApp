@@ -10,6 +10,7 @@ import {
   FormArray,
   Validators
 } from "@angular/forms";
+import { CommonService } from "../../services/common.service";
 
 @Component({
   selector: "app-payment-gateway",
@@ -30,7 +31,10 @@ export class PaymentGatewayComponent implements OnInit {
   isBank: boolean = false;
   methodSelected: boolean = false;
 
-  constructor(private checkout: CheckoutService) {}
+  constructor(
+    private common: CommonService,
+    private checkout: CheckoutService
+  ) {}
 
   ngOnInit() {
     this.initForm();

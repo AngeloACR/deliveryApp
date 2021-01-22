@@ -1,3 +1,6 @@
+<div class="backBox">
+  <p (click)="volverCategorias()">Volver</p>
+</div>
 <div id="restaurantCards" class="bigBox" *ngIf="productosLength">
   <div class="cardBox" *ngFor="let producto of productos">
     <div class="imgBox">
@@ -6,7 +9,7 @@
     <div class="infoBox">
       <p>{{'NAME' | translate}}: <br>{{producto.name}}</p><br><br>
       <p>{{'DESCRIPTION' | translate}}: <br>{{producto.description}}</p><br><br>
-      <p>{{'PRICE' | translate}}: <br>{{producto.price}}</p><br><br>
+      <p>{{'PRICE' | translate}}: <br>S/ {{producto.price}}</p><br><br>
     </div>
     <div class="moreBox">
       <button type="button" style="margin-bottom: 10px;" (click)="borrar($event, producto)">

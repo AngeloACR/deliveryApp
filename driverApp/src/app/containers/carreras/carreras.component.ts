@@ -23,17 +23,17 @@ export class CarrerasComponent implements OnInit {
   showCarreras: boolean = false;
   isAceptar: boolean = false;
   carreras: any;
-  
+
   constructor(private carrerasService: CarrerasService) {}
 
   async ngOnInit() {
-    await this.carrerasService.setCarreras();
-    this.toggleCarreras("", this.currentStatus);
+    this.toggleCarreras(this.currentStatus);
   }
 
-  async toggleCarreras(event, status) {
+  async toggleCarreras(status) {
     this.dismissButtons();
     this.currentStatus = status;
+    await this.carrerasService.setCarreras();
     let carreras = this.carrerasService.carreras;
     switch (status) {
       case "accepted":
@@ -62,8 +62,6 @@ export class CarrerasComponent implements OnInit {
     });
 
     this.showCarreras = true;
-    this.list.carreras = this.carreras;
-    this.list.ngOnInit();
   }
 
   dismissButtons() {
@@ -80,7 +78,9 @@ export class CarrerasComponent implements OnInit {
     };
   }
 
-  async actualizarCarreras() {
-    await this.ngOnInit();
+  async actualizarCarreras(event, status) {
+    await this.toggleCarreras(status);
+    this.list.carreras = this.carreras;
+    this.list.ngOnInit();
   }
 }

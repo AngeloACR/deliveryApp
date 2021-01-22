@@ -8,21 +8,22 @@
 </ion-header>
 <ion-content>
   <div *ngIf="escogerRestaurant">
-    <app-lista-restaurant #lista *ngIf="restaurantesReady" [isPedidos]="isPedidos" [restaurantes]="restaurantes"
+    <app-lista-restaurant *ngIf="restaurantesReady" [isPedidos]="isPedidos" [restaurantes]="restaurantes"
       (verPedidos)="mostrarPedidos($event)">
     </app-lista-restaurant>
   </div>
   <div *ngIf="verPedidos" class="typesBox">
-    <button class="typeButton" [ngClass]="pendingButton" (click)="togglePedidos($event, 'pending')">Pedidos
+    <button class="typeButton" [ngClass]="pendingButton" (click)="actualizarPedidos($event, 'pending')">Pedidos
       pendientes</button>
-    <button class="typeButton" [ngClass]="acceptedButton" (click)="togglePedidos($event, 'accepted')">Pedidos
-      aceptadas</button>
-    <button class="typeButton" [ngClass]="rejectedButton" (click)="togglePedidos($event, 'rejected')">Pedidos
-      rechazadas</button>
+    <button class="typeButton" [ngClass]="acceptedButton" (click)="actualizarPedidos($event, 'accepted')">Pedidos
+      aceptados</button>
+    <button class="typeButton" [ngClass]="rejectedButton" (click)="actualizarPedidos($event, 'rejected')">Pedidos
+      rechazados</button>
 
   </div>
-  <app-pedidos-list (volver)="volverRestaurant()" (buscar)="findDriver($event)" (actualizar)="actualizarPedidos()"
-    *ngIf="verPedidos" [isAceptar]="isAceptar" [isBuscar]="isBuscar" [pedidos]="pedidos">
+  <app-pedidos-list #lista (volver)="volverRestaurant()" (buscar)="findDriver($event)"
+    (actualizar)="actualizarPedidos($event, 'pending')" *ngIf="verPedidos" [isAceptar]="isAceptar" [isBuscar]="isBuscar"
+    [pedidos]="pedidos">
   </app-pedidos-list>
   <app-find-driver *ngIf="buscarConductor" (deal)="solicitarCarrera($event)" (volver)="volverPedidos()"
     [origin]="pedido.origin" [destination]="pedido.destination"></app-find-driver>

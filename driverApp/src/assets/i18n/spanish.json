@@ -197,5 +197,7 @@
   "TLF": "Teléfono",
   "ADD_RESTAURANT": "Agregar restaurante",
   "DELETE": "Borrar",
-  "EDIT": "Editar"
+  "EDIT": "Editar",
+  "UPLOADED_FILES": "Sus archivos",
+  "CONFIRM_PASSWORD": "Confirmar contraseña"
 }

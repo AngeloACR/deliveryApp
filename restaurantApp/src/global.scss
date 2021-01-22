@@ -218,3 +218,33 @@ ion-item.selectItem ion-select {
   width: 40%;
   color: black !important;
 }
+
+.backBox {
+  border-style: solid;
+  border-width: 2px;
+  border-color: red;
+  border-radius: 23px;
+  height: 23px;
+  width: 100px;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.backBox:active {
+  background-color: red;
+}
+
+.backBox p {
+  color: red;
+  margin: 0;
+  text-align: center;
+}
+
+.backBox:active p {
+  color: white;
+}
+
+input, ion-input{
+  color: black !important;
+}
+

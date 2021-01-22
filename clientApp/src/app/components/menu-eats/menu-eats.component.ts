@@ -9,6 +9,7 @@ import { CarritoService } from "../../services/carrito.service";
 //import { OneSignal } from '@ionic-native/onesignal/ngx';
 import { ListaRestaurantComponent } from "../../components/lista-restaurant/lista-restaurant.component";
 
+import { CommonService } from "../../services/common.service";
 import { CallNumber } from "@ionic-native/call-number/ngx";
 
 import { Router } from "@angular/router";
@@ -63,6 +64,7 @@ export class MenuEatsComponent implements OnInit {
     public loadingCtrl: LoadingController,
     private callNumber: CallNumber,
     public router: Router,
+    private common: CommonService,
     public zone: NgZone,
     private cat: CategoriasService,
     private prod: ProductosService,

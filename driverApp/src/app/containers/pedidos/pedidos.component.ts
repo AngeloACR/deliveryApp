@@ -27,13 +27,13 @@ export class PedidosComponent implements OnInit {
   constructor(private pedidosService: PedidosService) {}
 
   async ngOnInit() {
-    await this.pedidosService.setPedidos();
-    this.togglePedidos("", this.currentStatus);
+    this.togglePedidos(this.currentStatus);
   }
 
-  async togglePedidos(event, status) {
+  async togglePedidos(status) {
     this.dismissButtons();
     this.currentStatus = status;
+    await this.pedidosService.setPedidos();
     let pedidos = this.pedidosService.pedidos;
     switch (status) {
       case "accepted":
@@ -62,8 +62,6 @@ export class PedidosComponent implements OnInit {
     });
 
     this.showPedidos = true;
-    this.list.pedidos = this.pedidos;
-    this.list.ngOnInit();
   }
 
   dismissButtons() {
@@ -80,7 +78,9 @@ export class PedidosComponent implements OnInit {
     };
   }
 
-  async actualizarPedidos() {
-    await this.ngOnInit();
+  async actualizarPedidos(event, status) {
+    await this.togglePedidos(status);
+    this.list.pedidos = this.pedidos;
+    this.list.ngOnInit();
   }
 }

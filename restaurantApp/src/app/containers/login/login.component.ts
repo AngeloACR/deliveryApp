@@ -51,7 +51,13 @@ export class LoginComponent implements OnInit {
       await this.auth.login(email, password);
 
       this.menuCtrl.enable(true);
-      this.router.navigateByUrl("/home");
+      let isLogged = await this.auth.getStatus();
+      if (isLogged != null) {
+        this.router.navigateByUrl("home");
+      } else {
+        let message = "Ocurrió un error, por favor intente de nuevo";
+        this.common.showToast(message);
+      }
     } catch (error) {
       this.common.showToast(error.message);
     }

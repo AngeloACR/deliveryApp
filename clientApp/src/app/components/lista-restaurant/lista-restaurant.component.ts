@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { CommonService } from "../../services/common.service";
 
 @Component({
   selector: "app-lista-restaurant",
@@ -23,7 +24,7 @@ export class ListaRestaurantComponent implements OnInit {
 
   restaurantesLength: any;
 
-  constructor() {}
+  constructor(private common: CommonService) {}
 
   ngOnInit() {
     console.log("Opening restaurants list");

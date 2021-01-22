@@ -6,6 +6,7 @@ import {
   EventEmitter,
   ViewChild
 } from "@angular/core";
+import { CommonService } from "../../services/common.service";
 import { MapComponent } from "../../components/map/map.component";
 import { PlacesService } from "../../services/places.service";
 declare var google: any;
@@ -24,7 +25,10 @@ export class EatsDestinationComponent implements OnInit {
 
   origin: any;
 
-  constructor(private placesService: PlacesService) {}
+  constructor(
+    private common: CommonService,
+    private placesService: PlacesService
+  ) {}
 
   async ngOnInit() {}
 

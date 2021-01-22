@@ -2,6 +2,7 @@ import { Router } from "@angular/router";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { CarrerasListComponent } from "../../components/carreras-list/carreras-list.component";
 import { CarrerasService } from "../../services/carreras.service";
+import { CommonService } from "../../services/common.service";
 import { CheckoutService } from "../../services/checkout.service";
 @Component({
   selector: "app-carreras",
@@ -28,18 +29,19 @@ export class CarrerasComponent implements OnInit {
 
   constructor(
     private carrerasService: CarrerasService,
+    private common: CommonService,
     private checkout: CheckoutService,
     private router: Router
   ) {}
 
   async ngOnInit() {
-    await this.carrerasService.setCarreras();
-    this.toggleCarreras("", this.currentStatus);
+    this.toggleCarreras(this.currentStatus);
   }
 
-  async toggleCarreras(event, status) {
+  async toggleCarreras(status) {
     this.dismissButtons();
     this.currentStatus = status;
+    await this.carrerasService.setCarreras();
     let carreras = this.carrerasService.carreras;
     switch (status) {
       case "accepted":
@@ -68,8 +70,6 @@ export class CarrerasComponent implements OnInit {
     });
 
     this.showCarreras = true;
-    this.list.carreras = this.carreras;
-    this.list.ngOnInit();
   }
 
   dismissButtons() {
@@ -91,8 +91,10 @@ export class CarrerasComponent implements OnInit {
     this.router.navigateByUrl("/checkouttaxi");
   }
 
-  async actualizarCarreras() {
-    await this.ngOnInit();
+  async actualizarCarreras(event, status) {
+    await this.toggleCarreras(status);
+    this.list.carreras = this.carreras;
+    this.list.ngOnInit();
   }
 
   showSelection() {}

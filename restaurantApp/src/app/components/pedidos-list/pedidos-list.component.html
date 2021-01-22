@@ -1,15 +1,22 @@
+<div class="backBox">
+  <p (click)="volverRestaurantes()">Volver</p>
+</div>
 <div id="pedidoCards" class="bigBox" *ngIf="pedidosLength">
   <div class="cardBox" *ngFor="let pedido of pedidos">
     <div class="infoBox">
       <p>Origen: <br>{{pedido.origin.vicinity}}</p><br>
       <p>Destino: <br>{{pedido.destination.vicinity}}</p><br>
+      <p>Distancia del pedido: {{pedido.distance}}</p><br>
       <p>Productos: <br>
         <span style="margin-left: 15px;" *ngFor="let item of pedido.carrito.productos">
           Producto: {{item.producto.name}}, Cantidad: {{item.qty}}
         </span><br>
       </p><br>
-      <p>Monto total: {{pedido.carrito.montoTotal}}</p><br>
-      <p>Status: <br>{{pedido.restaurantStatus}}</p>
+      <p>Monto total: S/ {{pedido.carrito.montoTotal}}</p><br>
+      <p>Costo de envío: S/ {{pedido.fee}}</p><br>
+      <p>Status del pedido: {{pedido.restaurantStatus}}</p><br>
+      <p>Status de la carrera: {{pedido.driverStatus}}</p><br>
+      <p>Status del pago: {{pedido.paymentStatus}}</p>
     </div>
     <div class="moreBox" *ngIf="isAceptar">
       <button type="button" (click)="aceptarPedido($event, pedido)">
